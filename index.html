@@ -106,7 +106,7 @@ const x=p.new&&p.new.il?p.new:p.old;const editing=cur===x.il&&side.contains(docu
 if(p.eventType==='DELETE')delete D[x.il];else if(!editing)D[x.il]=fromRow(p.new);
 paint();if(cur===x.il&&!editing)sel(cur)}).subscribe();
 async function start(sess){if(!sess){login.hidden=false;return}login.hidden=true;me.textContent=sess.user.email.replace(DOMAIN,'');await load()}
-lf.onsubmit=async e=>{e.preventDefault();lerr.textContent='';const u=lu.value.trim().toLowerCase();
+lf.onsubmit=async e=>{e.preventDefault();lerr.textContent='';const u=lu.value.trim().toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u').replace(/i̇/g,'i');
 const {data,error}=await sb.auth.signInWithPassword({email:u.includes('@')?u:u+DOMAIN,password:lp.value});
 if(error){lerr.textContent='Kullanıcı adı veya şifre hatalı.';return}start(data.session)};
 out.onclick=async()=>{await sb.auth.signOut();location.reload()};
