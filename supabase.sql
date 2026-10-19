@@ -43,3 +43,28 @@ create policy "giris yapan gunceller" on public.iller
 
 -- Canlı güncelleme (Realtime) için tabloyu yayına ekle
 alter publication supabase_realtime add table public.iller;
+
+-- İzin listesi: sadece bu listedeki kullanıcılar verileri görüp değiştirebilir.
+-- Dışarıdan açılan hesaplar hiçbir şey göremez.
+create table public.izinli_kullanicilar (
+  user_id uuid primary key references auth.users(id) on delete cascade,
+  eklenme timestamptz not null default now()
+);
+alter table public.izinli_kullanicilar enable row level security;
+
+create schema if not exists private;
+grant usage on schema private to authenticated;
+create function private.izinli_mi() returns boolean
+language sql stable security definer set search_path = '' as $$
+  select exists (select 1 from public.izinli_kullanicilar where user_id = (select auth.uid()));
+$$;
+revoke execute on function private.izinli_mi() from public, anon;
+grant execute on function private.izinli_mi() to authenticated;
+
+alter policy "giris yapan okur" on public.iller using ((select private.izinli_mi()));
+alter policy "giris yapan ekler" on public.iller with check ((select private.izinli_mi()));
+alter policy "giris yapan gunceller" on public.iller using ((select private.izinli_mi())) with check ((select private.izinli_mi()));
+
+-- Yeni kullanıcıyı Authentication > Users'tan ekledikten sonra izin verin:
+-- insert into public.izinli_kullanicilar (user_id)
+-- select id from auth.users where email = 'kullaniciadi@bayi.local';

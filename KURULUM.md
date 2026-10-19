@@ -22,6 +22,13 @@ Klasördeki dosyalar:
 - Password: kullanıcıya vereceğiniz şifre
 - **Auto Confirm User** işaretli olsun
 
+Ardından SQL Editor'de şunu çalıştırarak kullanıcıya izin verin (izin listesinde olmayan hesaplar hiçbir veriyi göremez):
+
+```sql
+insert into public.izinli_kullanicilar (user_id)
+select id from auth.users where email = 'kullaniciadi@bayi.local';
+```
+
 Kullanıcı uygulamada sadece `yildirim` yazıp şifresiyle giriş yapar. `@bayi.local` gerçek bir e-posta değildir, sadece kullanıcı adı olarak kullanılır.
 
 - Şifre değiştirmek: kullanıcının yanındaki **…** menüsü
