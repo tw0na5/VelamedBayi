@@ -5,10 +5,10 @@
 <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
 <style>
 /* Harita solda, detay paneli sağda; dar ekranda alt alta */
-:root{--bg:#f3f5f7;--panel:#fff;--fg:#1b2430;--mut:#5f6b7a;--line:#d6dce3;--empty:#e3e7ec;
+:root{--colbg:#e9edf1;--overbg:#d8e3f0;--shadow:rgba(20,30,45,.06);--bg:#f3f5f7;--panel:#fff;--fg:#1b2430;--mut:#5f6b7a;--line:#d6dce3;--empty:#e3e7ec;
 --y:#d9481c;--t:#1f6fd1;--h:#1f9d6b;--disp:"Sora",system-ui,sans-serif;--body:"IBM Plex Sans",system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--panel:#18202a;--fg:#e6ebf1;--mut:#97a3b2;--line:#2b3542;--empty:#2a333f;--y:#f26a3d;--t:#4a93ef;--h:#3cc08b;color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#11161d;--panel:#18202a;--fg:#e6ebf1;--mut:#97a3b2;--line:#2b3542;--empty:#2a333f;--y:#f26a3d;--t:#4a93ef;--h:#3cc08b;color-scheme:dark}
+@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--panel:#18202a;--fg:#e6ebf1;--mut:#97a3b2;--line:#2b3542;--empty:#2a333f;--y:#f26a3d;--t:#4a93ef;--h:#3cc08b;--colbg:#141b23;--overbg:#1e2a38;--shadow:rgba(0,0,0,.3);color-scheme:dark}}
+:root[data-theme="dark"]{--bg:#11161d;--panel:#18202a;--fg:#e6ebf1;--mut:#97a3b2;--line:#2b3542;--empty:#2a333f;--y:#f26a3d;--t:#4a93ef;--h:#3cc08b;--colbg:#141b23;--overbg:#1e2a38;--shadow:rgba(0,0,0,.3);color-scheme:dark}
 body{background:var(--bg);color:var(--fg);font-family:var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px}
 h1{font-family:var(--disp);font-size:1.4rem;margin:0}
 header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
@@ -42,6 +42,41 @@ button:focus-visible,path:focus-visible{outline:2px solid var(--t)}
 #io{width:100%;min-height:90px;font-family:monospace;font-size:.75rem}
 .x{background:none;border:0;color:var(--mut);cursor:pointer}
 [hidden]{display:none!important}
+.tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
+.tabs button{font:500 .9rem var(--body);border:0;background:none;color:var(--mut);padding:6px 14px;border-radius:6px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--fg);color:var(--panel)}
+.btool{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
+.btool input,.btool select{min-width:0}
+.board{display:grid;grid-template-columns:repeat(3,minmax(260px,1fr));gap:12px;overflow-x:auto;padding-bottom:8px;align-items:start}
+.col{background:var(--colbg);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
+.col h3{font:700 .95rem var(--disp);margin:0;display:flex;justify-content:space-between;align-items:center;padding:2px 4px}
+.col h3 small{font:500 .8rem var(--body);color:var(--mut);background:var(--panel);border-radius:99px;padding:1px 8px;font-variant-numeric:tabular-nums}
+.list{display:flex;flex-direction:column;gap:8px;min-height:40px;border-radius:8px;transition:background .15s}
+.list.over{background:var(--overbg)}
+.card{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:8px;padding:9px 10px;cursor:pointer;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 2px var(--shadow)}
+.card:hover{border-color:var(--mut)}
+.card.drag{opacity:.4}
+.card .tt{font-weight:500;line-height:1.35;overflow-wrap:anywhere}
+.meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.78rem;color:var(--mut);font-variant-numeric:tabular-nums}
+.pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:99px;padding:1px 8px;background:var(--bg);color:var(--fg)}
+.addc{font:inherit;border:0;background:none;color:var(--mut);text-align:left;padding:6px 4px;border-radius:6px;cursor:pointer}
+.addc:hover{background:var(--panel);color:var(--fg)}
+.comp{display:flex;flex-direction:column;gap:6px}
+.comp textarea{min-height:56px}
+.badge{font-size:.72rem;border-radius:99px;padding:1px 8px;white-space:nowrap}
+.d-yapilacak{background:var(--bg);color:var(--mut);border:1px solid var(--line)}
+.d-devam{background:var(--t);color:#fff}
+.d-tamam{background:var(--h);color:#fff}
+.krow{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:.9rem;background:var(--bg)}
+.krow span:first-child{overflow-wrap:anywhere;min-width:0}
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);padding:0;width:min(520px,calc(100vw - 32px))}
+dialog::backdrop{background:rgba(10,15,22,.45)}
+dialog form{display:flex;flex-direction:column;gap:12px;padding:20px}
+dialog h2{font-family:var(--disp);margin:0;font-size:1.15rem}
+.two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
+@media(max-width:480px){.two{grid-template-columns:1fr}}
+.danger{color:var(--y)!important;border-color:var(--y)!important}
+.sp{flex:1}
 .login{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:20;padding:16px}
 .login form:not([hidden]){background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px}
 .err{color:var(--y);font-size:.85rem;min-height:1.1em}
@@ -60,11 +95,23 @@ button:focus-visible,path:focus-visible{outline:2px solid var(--t)}
 <label>Referans kodu<input id="rk" autocomplete="off" required></label>
 <button class="b p" type="submit">Kayıt ol</button><div class="err" id="rerr"></div>
 <button class="b" type="button" id="toLog">Girişe dön</button></form></div>
-<header><h1>Bayi Sorumluluk Haritası</h1><div class="leg" id="leg"></div><div class="who"><span id="me"></span><button class="b" id="out">Çıkış</button></div></header>
-<div class="wrap">
+<header><h1>Bayi Sorumluluk Haritası</h1><nav class="tabs" role="tablist"><button role="tab" id="tMap" aria-selected="true">Harita</button><button role="tab" id="tBoard" aria-selected="false">İş Panosu</button></nav><div class="leg" id="leg"></div><div class="who"><span id="me"></span><button class="b" id="out">Çıkış</button></div></header>
+<div class="wrap" id="vMap">
 <div class="map"><svg viewBox="0 0 1000 428" id="svg" role="img" aria-label="Türkiye il haritası"></svg><div id="tip">Bir ile tıklayın.</div><div class="stats" id="stats"></div><div class="stats" id="sync"></div></div>
 <aside id="side"><p style="color:var(--mut)">Haritadan bir il seçin. Sorumluyu, bayi bilgilerini ve yapılan işleri buradan girebilirsiniz.</p></aside>
 </div>
+<section id="vBoard" hidden>
+<div class="btool"><select id="fIl" aria-label="İl filtresi"></select><select id="fSor" aria-label="Sorumlu filtresi"><option value="">Tüm sorumlular</option><option>Yıldırım</option><option>Tuna</option><option>Hakan</option></select><input id="fQ" placeholder="Kartlarda ara" aria-label="Kartlarda ara"><span class="sp"></span><span class="stats" id="bstat"></span></div>
+<div class="board" id="cols"></div>
+</section>
+<dialog id="dlg"><form id="kf" method="dialog"><h2 id="kTitle">Kart</h2>
+<label>Başlık<input id="kB" required></label>
+<div class="two"><label>İl<select id="kIl" required></select></label><label>Durum<select id="kD"></select></label></div>
+<div class="two"><label>Tarih<input type="date" id="kT"></label><label>Sorumlu<input id="kS" disabled></label></div>
+<label>Açıklama<textarea id="kA" rows="5"></textarea></label>
+<div class="stats" id="kMeta"></div><div class="err" id="kErr"></div>
+<div class="row"><button class="b" type="button" id="kDel">Sil</button><span class="sp"></span><button class="b" type="button" id="kCancel">İptal</button><button class="b p" type="submit" id="kSave">Kaydet</button></div>
+</form></dialog>
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
 <script>
@@ -94,7 +141,7 @@ function paint(){const c={Yıldırım:0,Tuna:0,Hakan:0};svg.querySelectorAll('pa
 e.style.fill=s?`var(${R[s]})`:'var(--empty)';e.classList.toggle('dim',!!s&&hide.has(s));e.classList.toggle('sel',e.dataset.n===cur);const l=LB[e.dataset.n];if(l)l.classList.toggle('dim',!!s&&hide.has(s))});
 leg.innerHTML='';Object.keys(R).forEach(s=>{const b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed',!hide.has(s));
 b.innerHTML=`<span class="dot" style="background:var(${R[s]})"></span>${s} <small>${c[s]} il</small>`;b.onclick=()=>{hide.has(s)?hide.delete(s):hide.add(s);paint()};leg.appendChild(b)});
-stats.textContent=`Atanmamış il: ${81-c.Yıldırım-c.Tuna-c.Hakan}`}
+if(typeof board==='function'&&!vBoard.hidden)board();stats.textContent=`Atanmamış il: ${81-c.Yıldırım-c.Tuna-c.Hakan}`}
 const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
 function sel(n){cur=n;const r=D[n]||(D[n]={s:'',isler:[]});
 side.innerHTML=`<h2>${n}</h2>
@@ -103,23 +150,88 @@ side.innerHTML=`<h2>${n}</h2>
 <label>Yetkili kişi<input id="f_yetkili" value="${esc(r.yetkili)}"></label>
 <label>Telefon<input id="f_tel" value="${esc(r.tel)}"></label>
 <label>Notlar<textarea id="f_not">${esc(r.not)}</textarea></label>
-<div><label>Yapılan işler</label><div class="jobs" id="jobs"></div></div>
-<div class="row"><input type="date" id="j_t" style="flex:0 0 auto"><input id="j_a" placeholder="İş açıklaması" style="flex:1;min-width:0"><button class="b p" id="j_add">Ekle</button></div>`;
+<div><label>İşler</label><div class="jobs" id="jobs"></div></div>
+<div class="row"><button class="b p" id="j_add">+ Bu ile kart ekle</button><button class="b" id="j_pano">Panoda göster</button></div>`;
 ['s','bayi','yetkili','tel','not'].forEach(k=>{const el=document.getElementById('f_'+k);el.oninput=()=>{r[k]=el.value;save();paint()}});
-j_t.value=new Date().toISOString().slice(0,10);
-const addJob=()=>{if(!j_a.value.trim())return;r.isler.push({t:j_t.value,a:j_a.value.trim()});r.isler.sort((a,b)=>b.t.localeCompare(a.t));j_a.value='';save();jobsR()};
-j_add.onclick=addJob;j_a.onkeydown=e=>{if(e.key==='Enter')addJob()};
-function jobsR(){jobs.innerHTML=r.isler.length?'':'<span class="stats">Henüz iş eklenmedi.</span>';r.isler.forEach((j,i)=>{const d=document.createElement('div');d.className='job';d.style.borderColor=r.s?`var(${R[r.s]})`:'';
-d.innerHTML=`<span>${esc(j.a)}</span><span><small>${j.t.split('-').reverse().join('.')}</small> <button class="x" title="Sil">✕</button></span>`;d.querySelector('button').onclick=()=>{r.isler.splice(i,1);save();jobsR()};jobs.appendChild(d)})}
-jobsR();paint()}
+j_add.onclick=()=>openCard(null,{il:n});j_pano.onclick=()=>{fIl.value=n;show('board')};
+ilKart();paint()}
 
+const DUR=[['yapilacak','Yapılacak'],['devam','Devam ediyor'],['tamam','Tamamlandı']];const DN=Object.fromEntries(DUR);
+const ILLER=P.map(p=>p.n).sort((a,b)=>a.localeCompare(b,'tr'));
+let K={},dragId=null,editId=null;
+const fmt=d=>d?d.split('-').reverse().join('.'):'';
+const sorOf=il=>(D[il]&&D[il].s)||'';
+fIl.innerHTML='<option value="">Tüm iller</option>'+ILLER.map(n=>`<option>${n}</option>`).join('');
+kIl.innerHTML='<option value="">İl seçin</option>'+ILLER.map(n=>`<option>${n}</option>`).join('');
+kD.innerHTML=DUR.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
+kIl.onchange=()=>kS.value=sorOf(kIl.value)||'Atanmamış';
+function show(v){const b=v==='board';vMap.hidden=b;vBoard.hidden=!b;tMap.setAttribute('aria-selected',!b);tBoard.setAttribute('aria-selected',b);if(b)board();try{history.replaceState(null,'',b?'#pano':'#')}catch(e){}}
+tMap.onclick=()=>show('map');tBoard.onclick=()=>show('board');
+[fIl,fSor].forEach(x=>x.onchange=board);fQ.oninput=board;
+const sorted=d=>Object.values(K).filter(c=>c.durum===d).sort((a,b)=>a.sira-b.sira);
+function visible(c){const q=fQ.value.trim().toLocaleLowerCase('tr');
+return(!fIl.value||c.il===fIl.value)&&(!fSor.value||sorOf(c.il)===fSor.value)&&(!q||(c.baslik+' '+(c.aciklama||'')+' '+c.il).toLocaleLowerCase('tr').includes(q))}
+function cardEl(c){const s=sorOf(c.il);const e=document.createElement('div');e.className='card';e.draggable=true;e.dataset.id=c.id;e.tabIndex=0;
+if(s)e.style.borderLeftColor=`var(${R[s]})`;
+e.innerHTML=`<div class="tt"></div><div class="meta"><span class="pill">${s?`<span class="dot" style="background:var(${R[s]})"></span>`:''}${esc(c.il)}</span>${c.tarih?`<span>${fmt(c.tarih)}</span>`:''}${c.aciklama?'<span title="Açıklama var">☰</span>':''}</div>`;
+e.querySelector('.tt').textContent=c.baslik;
+e.onclick=()=>openCard(c.id);e.onkeydown=k=>{if(k.key==='Enter')openCard(c.id)};
+e.ondragstart=ev=>{dragId=c.id;e.classList.add('drag');ev.dataTransfer.effectAllowed='move';try{ev.dataTransfer.setData('text/plain',c.id)}catch(_){}};
+e.ondragend=()=>{dragId=null;e.classList.remove('drag');document.querySelectorAll('.list.over').forEach(l=>l.classList.remove('over'))};
+return e}
+function board(){if(vBoard.hidden)return;cols.innerHTML='';let tot=0;
+DUR.forEach(([d,lab])=>{const items=sorted(d).filter(visible);tot+=items.length;
+const col=document.createElement('div');col.className='col';col.innerHTML=`<h3>${lab}<small>${items.length}</small></h3>`;
+const list=document.createElement('div');list.className='list';list.dataset.d=d;items.forEach(c=>list.appendChild(cardEl(c)));
+list.ondragover=ev=>{if(!dragId)return;ev.preventDefault();list.classList.add('over')};
+list.ondragleave=ev=>{if(!list.contains(ev.relatedTarget))list.classList.remove('over')};
+list.ondrop=ev=>{ev.preventDefault();list.classList.remove('over');if(!dragId)return;
+const els=[...list.querySelectorAll('.card')].filter(x=>x.dataset.id!==dragId);let idx=els.findIndex(x=>{const r=x.getBoundingClientRect();return ev.clientY<r.top+r.height/2});if(idx<0)idx=els.length;
+moveCard(dragId,d,els[idx-1]&&K[els[idx-1].dataset.id],els[idx]&&K[els[idx].dataset.id])};
+col.appendChild(list);
+const add=document.createElement('button');add.className='addc';add.textContent='+ Kart ekle';
+add.onclick=()=>{add.hidden=true;const f=document.createElement('div');f.className='comp';
+f.innerHTML=`<textarea placeholder="Kart başlığı"></textarea><select><option value="">İl seçin</option>${ILLER.map(n=>`<option ${n===(fIl.value||cur)?'selected':''}>${n}</option>`).join('')}</select><div class="row"><button class="b p">Ekle</button><button class="b" type="button">Vazgeç</button></div><div class="err"></div>`;
+const [ta]=f.getElementsByTagName('textarea'),[se]=f.getElementsByTagName('select'),[ok,no]=f.getElementsByTagName('button'),er=f.querySelector('.err');
+const go=async()=>{const b=ta.value.trim();if(!b){ta.focus();return}if(!se.value){er.textContent='Bir il seçin.';return}
+const last=sorted(d).pop();ok.disabled=true;const {data,error}=await sb.from('isler').insert({il:se.value,baslik:b,durum:d,sira:last?last.sira+1:Date.now()/1000}).select().single();ok.disabled=false;
+if(error){er.textContent='Eklenemedi: '+error.message;return}K[data.id]=data;ta.value='';er.textContent='';board();ilKart();f.querySelector('textarea').focus()};
+ok.onclick=go;ta.onkeydown=k=>{if(k.key==='Enter'&&!k.shiftKey){k.preventDefault();go()}if(k.key==='Escape'){f.remove();add.hidden=false}};
+no.onclick=()=>{f.remove();add.hidden=false};col.insertBefore(f,add);ta.focus()};
+col.appendChild(add);cols.appendChild(col)});
+bstat.textContent=tot+' kart'}
+async function moveCard(id,d,prev,next){const c=K[id];if(!c)return;
+let s=prev&&next?(prev.sira+next.sira)/2:prev?prev.sira+1:next?next.sira-1:Date.now()/1000;
+if(c.durum===d&&c.sira===s)return;const old={durum:c.durum,sira:c.sira};K[id]={...c,durum:d,sira:s};board();ilKart();
+const {error}=await sb.from('isler').update({durum:d,sira:s}).eq('id',id);if(error){K[id]={...K[id],...old};board();ilKart();bstat.textContent='Taşınamadı: '+error.message}}
+function ilKart(){const j=document.getElementById('jobs');if(!j||!cur)return;
+const ord={yapilacak:0,devam:1,tamam:2};const items=Object.values(K).filter(c=>c.il===cur).sort((a,b)=>ord[a.durum]-ord[b.durum]||a.sira-b.sira);
+j.innerHTML=items.length?'':'<span class="stats">Bu ilde henüz kart yok.</span>';
+items.forEach(c=>{const r=document.createElement('div');r.className='krow';r.innerHTML=`<span></span><span class="badge d-${c.durum}">${DN[c.durum]}</span>`;r.firstChild.textContent=c.baslik;r.onclick=()=>openCard(c.id);j.appendChild(r)})}
+let delArm=false;
+function openCard(id,pre={}){editId=id;const c=id?K[id]:{baslik:'',il:pre.il||fIl.value||cur||'',durum:'yapilacak',tarih:new Date().toISOString().slice(0,10),aciklama:''};
+kTitle.textContent=id?'Kartı düzenle':'Yeni kart';kB.value=c.baslik;kIl.value=c.il;kD.value=c.durum;kT.value=c.tarih||'';kA.value=c.aciklama||'';kS.value=sorOf(c.il)||'Atanmamış';
+kMeta.textContent=id?'Oluşturulma: '+new Date(c.created_at).toLocaleString('tr-TR')+(c.updated_at!==c.created_at?' · Son değişiklik: '+new Date(c.updated_at).toLocaleString('tr-TR'):''):'';
+kErr.textContent='';kDel.hidden=!id;delArm=false;kDel.textContent='Sil';kDel.classList.remove('danger');dlg.showModal();kB.focus()}
+kCancel.onclick=()=>dlg.close();
+kDel.onclick=async()=>{if(!delArm){delArm=true;kDel.textContent='Silmek için tekrar tıklayın';kDel.classList.add('danger');return}
+const {error}=await sb.from('isler').delete().eq('id',editId);if(error){kErr.textContent='Silinemedi: '+error.message;return}delete K[editId];dlg.close();board();ilKart()};
+kf.onsubmit=async e=>{e.preventDefault();if(!kB.value.trim()||!kIl.value){kErr.textContent='Başlık ve il gerekli.';return}
+const row={baslik:kB.value.trim(),il:kIl.value,durum:kD.value,tarih:kT.value||null,aciklama:kA.value.trim()||null};
+kSave.disabled=true;let res;
+if(editId){const c=K[editId];if(c.durum!==row.durum){const l=sorted(row.durum).pop();row.sira=l?l.sira+1:Date.now()/1000}res=await sb.from('isler').update(row).eq('id',editId).select().single()}
+else{const l=sorted(row.durum).pop();row.sira=l?l.sira+1:Date.now()/1000;res=await sb.from('isler').insert(row).select().single()}
+kSave.disabled=false;if(res.error){kErr.textContent='Kaydedilemedi: '+res.error.message;return}K[res.data.id]=res.data;dlg.close();board();ilKart()};
+async function loadK(){const {data,error}=await sb.from('isler').select('*');if(error){bstat.textContent='Kartlar alınamadı: '+error.message;return}K={};data.forEach(c=>K[c.id]=c);board();ilKart()}
+sb.channel('isler').on('postgres_changes',{event:'*',schema:'public',table:'isler'},p=>{
+if(p.eventType==='DELETE'){delete K[p.old.id]}else K[p.new.id]=p.new;board();ilKart()}).subscribe();
 async function load(){const {data,error}=await sb.from('iller').select('*');if(error){sync.textContent='Veri alınamadı: '+error.message;return}
 D={};data.forEach(x=>D[x.il]=fromRow(x));paint();sync.textContent='Canlı · '+data.length+' il kaydı'}
 sb.channel('iller').on('postgres_changes',{event:'*',schema:'public',table:'iller'},p=>{
 const x=p.new&&p.new.il?p.new:p.old;const editing=cur===x.il&&side.contains(document.activeElement);
 if(p.eventType==='DELETE')delete D[x.il];else if(!editing)D[x.il]=fromRow(p.new);
 paint();if(cur===x.il&&!editing)sel(cur)}).subscribe();
-async function start(sess){if(!sess){login.hidden=false;return}login.hidden=true;me.textContent=sess.user.email.replace(DOMAIN,'');await load()}
+async function start(sess){if(!sess){login.hidden=false;return}login.hidden=true;me.textContent=sess.user.email.replace(DOMAIN,'');await load();await loadK();if(location.hash==='#pano')show('board')}
 const norm=v=>v.trim().toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u').replace(/i̇/g,'i');
 toReg.onclick=()=>{lf.hidden=true;rf.hidden=false;ru.focus()};
 toLog.onclick=()=>{rf.hidden=true;lf.hidden=false;lu.focus()};

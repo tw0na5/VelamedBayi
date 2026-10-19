@@ -76,3 +76,29 @@ revoke all on private.ayarlar from public, anon, authenticated;
 -- insert into private.ayarlar values ('referans_hash', extensions.crypt('KODUNUZ', extensions.gen_salt('bf')))
 --   on conflict (anahtar) do update set deger = excluded.deger;
 -- public.kayit_ol(kullanici, sifre, referans) fonksiyonu: kodu kontrol eder, kullanıcıyı açar ve izin listesine ekler.
+
+-- İş Panosu (Trello tarzı kartlar)
+create table public.isler (
+  id uuid primary key default gen_random_uuid(),
+  il text not null,
+  baslik text not null check (length(trim(baslik)) > 0),
+  aciklama text,
+  durum text not null default 'yapilacak' check (durum in ('yapilacak','devam','tamam')),
+  sira double precision not null default extract(epoch from now()),
+  tarih date,
+  olusturan uuid default auth.uid(),
+  created_at timestamptz not null default now(),
+  updated_at timestamptz not null default now()
+);
+create index isler_il_idx on public.isler (il);
+create function public.isler_touch() returns trigger
+language plpgsql set search_path = '' as $$
+begin new.updated_at := now(); return new; end $$;
+create trigger isler_touch before update on public.isler
+for each row execute function public.isler_touch();
+alter table public.isler enable row level security;
+create policy "izinli okur" on public.isler for select to authenticated using ((select private.izinli_mi()));
+create policy "izinli ekler" on public.isler for insert to authenticated with check ((select private.izinli_mi()));
+create policy "izinli gunceller" on public.isler for update to authenticated using ((select private.izinli_mi())) with check ((select private.izinli_mi()));
+create policy "izinli siler" on public.isler for delete to authenticated using ((select private.izinli_mi()));
+alter publication supabase_realtime add table public.isler;
