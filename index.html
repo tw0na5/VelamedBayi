@@ -102,11 +102,10 @@ side.innerHTML=`<h2>${n}</h2>
 <label>Bayi adı<input id="f_bayi" value="${esc(r.bayi)}"></label>
 <label>Yetkili kişi<input id="f_yetkili" value="${esc(r.yetkili)}"></label>
 <label>Telefon<input id="f_tel" value="${esc(r.tel)}"></label>
-<label>Adres<input id="f_adres" value="${esc(r.adres)}"></label>
 <label>Notlar<textarea id="f_not">${esc(r.not)}</textarea></label>
 <div><label>Yapılan işler</label><div class="jobs" id="jobs"></div></div>
 <div class="row"><input type="date" id="j_t" style="flex:0 0 auto"><input id="j_a" placeholder="İş açıklaması" style="flex:1;min-width:0"><button class="b p" id="j_add">Ekle</button></div>`;
-['s','bayi','yetkili','tel','adres','not'].forEach(k=>{const el=document.getElementById('f_'+k);el.oninput=()=>{r[k]=el.value;save();paint()}});
+['s','bayi','yetkili','tel','not'].forEach(k=>{const el=document.getElementById('f_'+k);el.oninput=()=>{r[k]=el.value;save();paint()}});
 j_t.value=new Date().toISOString().slice(0,10);
 const addJob=()=>{if(!j_a.value.trim())return;r.isler.push({t:j_t.value,a:j_a.value.trim()});r.isler.sort((a,b)=>b.t.localeCompare(a.t));j_a.value='';save();jobsR()};
 j_add.onclick=addJob;j_a.onkeydown=e=>{if(e.key==='Enter')addJob()};
