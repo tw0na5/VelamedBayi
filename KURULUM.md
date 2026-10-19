@@ -34,6 +34,10 @@ Kullanıcı uygulamada sadece `yildirim` yazıp şifresiyle giriş yapar. `@bayi
 - Şifre değiştirmek: kullanıcının yanındaki **…** menüsü
 - Erişimi kaldırmak: kullanıcıyı silin
 
+## Referans koduyla kayıt
+
+Giriş ekranındaki "Referans koduyla kayıt ol" ile kullanıcılar kendi hesabını açabilir. Kayıt sadece doğru referans koduyla yapılır ve hesap otomatik olarak izin listesine eklenir. Kod veritabanında şifrelenmiş tutulur. Kodu değiştirmek için `supabase.sql` dosyasının sonundaki komutu kullanın.
+
 ## 3. Vercel
 
 1. Klasörü GitHub'a yükleyin ve Vercel'de **Add New → Project** ile içe aktarın.

@@ -41,7 +41,7 @@ button:focus-visible,path:focus-visible{outline:2px solid var(--t)}
 .x{background:none;border:0;color:var(--mut);cursor:pointer}
 [hidden]{display:none!important}
 .login{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:20;padding:16px}
-.login form{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px}
+.login form:not([hidden]){background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px}
 .err{color:var(--y);font-size:.85rem;min-height:1.1em}
 .who{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--mut)}
 </style>
@@ -50,7 +50,14 @@ button:focus-visible,path:focus-visible{outline:2px solid var(--t)}
 <label>Kullanıcı adı<input id="lu" autocomplete="username" required></label>
 <label>Şifre<input id="lp" type="password" autocomplete="current-password" required></label>
 <button class="b p" type="submit">Giriş yap</button><div class="err" id="lerr"></div>
-<p class="stats">Hesabınız yoksa yöneticiden isteyin.</p></form></div>
+<button class="b" type="button" id="toReg">Referans koduyla kayıt ol</button></form>
+<form id="rf" hidden><h1>Kayıt ol</h1>
+<label>Kullanıcı adı<input id="ru" autocomplete="username" required></label>
+<label>Şifre (en az 6 karakter)<input id="rp" type="password" autocomplete="new-password" minlength="6" required></label>
+<label>Şifre tekrar<input id="rp2" type="password" autocomplete="new-password" minlength="6" required></label>
+<label>Referans kodu<input id="rk" autocomplete="off" required></label>
+<button class="b p" type="submit">Kayıt ol</button><div class="err" id="rerr"></div>
+<button class="b" type="button" id="toLog">Girişe dön</button></form></div>
 <header><h1>Bayi Sorumluluk Haritası</h1><div class="leg" id="leg"></div><div class="who"><span id="me"></span><button class="b" id="out">Çıkış</button></div></header>
 <div class="wrap">
 <div class="map"><svg viewBox="0 0 1000 428" id="svg" role="img" aria-label="Türkiye il haritası"></svg><div id="tip">Bir ile tıklayın.</div><div class="stats" id="stats"></div><div class="stats" id="sync"></div></div>
@@ -106,7 +113,18 @@ const x=p.new&&p.new.il?p.new:p.old;const editing=cur===x.il&&side.contains(docu
 if(p.eventType==='DELETE')delete D[x.il];else if(!editing)D[x.il]=fromRow(p.new);
 paint();if(cur===x.il&&!editing)sel(cur)}).subscribe();
 async function start(sess){if(!sess){login.hidden=false;return}login.hidden=true;me.textContent=sess.user.email.replace(DOMAIN,'');await load()}
-lf.onsubmit=async e=>{e.preventDefault();lerr.textContent='';const u=lu.value.trim().toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u').replace(/i̇/g,'i');
+const norm=v=>v.trim().toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u').replace(/i̇/g,'i');
+toReg.onclick=()=>{lf.hidden=true;rf.hidden=false;ru.focus()};
+toLog.onclick=()=>{rf.hidden=true;lf.hidden=false;lu.focus()};
+rf.onsubmit=async e=>{e.preventDefault();rerr.textContent='';
+if(rp.value!==rp2.value){rerr.textContent='Şifreler aynı değil.';return}
+const k=norm(ru.value);
+const {data,error}=await sb.rpc('kayit_ol',{kullanici:k,sifre:rp.value,referans:rk.value.trim()});
+if(error){rerr.textContent=error.message||'Kayıt yapılamadı.';return}
+const r=await sb.auth.signInWithPassword({email:data+DOMAIN,password:rp.value});
+if(r.error){rerr.textContent='Kayıt tamam, ama giriş yapılamadı. Girişe dönüp tekrar deneyin.';return}
+rf.hidden=true;lf.hidden=false;start(r.data.session)};
+lf.onsubmit=async e=>{e.preventDefault();lerr.textContent='';const u=norm(lu.value);
 const {data,error}=await sb.auth.signInWithPassword({email:u.includes('@')?u:u+DOMAIN,password:lp.value});
 if(error){lerr.textContent='Kullanıcı adı veya şifre hatalı.';return}start(data.session)};
 out.onclick=async()=>{await sb.auth.signOut();location.reload()};

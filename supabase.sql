@@ -68,3 +68,11 @@ alter policy "giris yapan gunceller" on public.iller using ((select private.izin
 -- Yeni kullanıcıyı Authentication > Users'tan ekledikten sonra izin verin:
 -- insert into public.izinli_kullanicilar (user_id)
 -- select id from auth.users where email = 'kullaniciadi@bayi.local';
+
+-- Referans koduyla kayıt. Kod veritabanında şifrelenmiş (hash) tutulur; tarayıcıya hiç gönderilmez.
+create table private.ayarlar (anahtar text primary key, deger text not null);
+revoke all on private.ayarlar from public, anon, authenticated;
+-- Kodu belirlemek/değiştirmek için (KODUNUZ yerine yeni kodu yazın):
+-- insert into private.ayarlar values ('referans_hash', extensions.crypt('KODUNUZ', extensions.gen_salt('bf')))
+--   on conflict (anahtar) do update set deger = excluded.deger;
+-- public.kayit_ol(kullanici, sifre, referans) fonksiyonu: kodu kontrol eder, kullanıcıyı açar ve izin listesine ekler.
