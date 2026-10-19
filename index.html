@@ -23,6 +23,8 @@ svg{width:100%;height:auto;display:block}
 path{stroke:var(--panel);stroke-width:.8;cursor:pointer;transition:opacity .15s}
 path:hover{opacity:.75}path.sel{stroke:var(--fg);stroke-width:2}
 path.dim{opacity:.2}
+.lbl{font:600 7.5px var(--body);fill:var(--fg);stroke:var(--panel);stroke-width:2.2px;paint-order:stroke;stroke-linejoin:round;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
+.lbl.dim{opacity:.35}
 #tip{font-size:.85rem;color:var(--mut);min-height:1.2em;padding:4px}
 aside{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
 aside h2{font-family:var(--disp);margin:0;font-size:1.25rem}
@@ -82,8 +84,14 @@ P.forEach(p=>{const e=document.createElementNS('http://www.w3.org/2000/svg','pat
 e.onclick=()=>sel(p.n);e.onkeydown=k=>{if(k.key==='Enter')sel(p.n)};
 e.onmouseenter=()=>{const r=D[p.n];tip.textContent=p.n+(r&&r.s?' — '+r.s+(r.bayi?' · '+r.bayi:''):' — atanmamış')};
 svg.appendChild(e)});
+const NS='http://www.w3.org/2000/svg',LB={};
+const center=d=>{let best=null,ba=0;d.split('Z').filter(Boolean).forEach(s=>{const pts=s.replace('M','').split('L').map(q=>q.split(',').map(Number));
+let a=0,cx=0,cy=0;for(let i=0;i<pts.length;i++){const [x1,y1]=pts[i],[x2,y2]=pts[(i+1)%pts.length];const f=x1*y2-x2*y1;a+=f;cx+=(x1+x2)*f;cy+=(y1+y2)*f}
+if(Math.abs(a)>ba){ba=Math.abs(a);best=[cx/(3*a),cy/(3*a)]}});return best};
+const lg=document.createElementNS(NS,'g');svg.appendChild(lg);
+P.forEach(p=>{const c=center(p.d);if(!c)return;const tx=document.createElementNS(NS,'text');tx.setAttribute('class','lbl');tx.setAttribute('x',c[0].toFixed(1));tx.setAttribute('y',c[1].toFixed(1));tx.textContent=p.n;lg.appendChild(tx);LB[p.n]=tx});
 function paint(){const c={Yıldırım:0,Tuna:0,Hakan:0};svg.querySelectorAll('path').forEach(e=>{const r=D[e.dataset.n];const s=r&&r.s;if(s)c[s]++;
-e.style.fill=s?`var(${R[s]})`:'var(--empty)';e.classList.toggle('dim',!!s&&hide.has(s));e.classList.toggle('sel',e.dataset.n===cur)});
+e.style.fill=s?`var(${R[s]})`:'var(--empty)';e.classList.toggle('dim',!!s&&hide.has(s));e.classList.toggle('sel',e.dataset.n===cur);const l=LB[e.dataset.n];if(l)l.classList.toggle('dim',!!s&&hide.has(s))});
 leg.innerHTML='';Object.keys(R).forEach(s=>{const b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed',!hide.has(s));
 b.innerHTML=`<span class="dot" style="background:var(${R[s]})"></span>${s} <small>${c[s]} il</small>`;b.onclick=()=>{hide.has(s)?hide.delete(s):hide.add(s);paint()};leg.appendChild(b)});
 stats.textContent=`Atanmamış il: ${81-c.Yıldırım-c.Tuna-c.Hakan}`}
