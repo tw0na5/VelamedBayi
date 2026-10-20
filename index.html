@@ -1,53 +1,101 @@
 <!doctype html>
 <html lang="tr"><head>
-<title>Bayi Sorumluluk Haritası</title>
-<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
-<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=IBM+Plex+Sans:wght@400;500&display=swap">
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width,initial-scale=1,viewport-fit=cover">
+<title>Velamed Bayi</title>
+<meta name="theme-color" content="#1b2430">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon-192.png">
+<link rel="apple-touch-icon" href="apple-touch-icon.png">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-title" content="Velamed">
+<link rel="preconnect" href="https://fonts.googleapis.com">
+<link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Sora:wght@500;700&family=IBM+Plex+Sans:wght@400;500;600&display=swap">
 <style>
-/* Harita solda, detay paneli sağda; dar ekranda alt alta */
-:root{--colbg:#e9edf1;--overbg:#d8e3f0;--shadow:rgba(20,30,45,.06);--bg:#f3f5f7;--panel:#fff;--fg:#1b2430;--mut:#5f6b7a;--line:#d6dce3;--empty:#e3e7ec;
---y:#d9481c;--t:#1f6fd1;--h:#1f9d6b;--disp:"Sora",system-ui,sans-serif;--body:"IBM Plex Sans",system-ui,sans-serif}
-@media (prefers-color-scheme:dark){:root:not([data-theme="light"]){--bg:#11161d;--panel:#18202a;--fg:#e6ebf1;--mut:#97a3b2;--line:#2b3542;--empty:#2a333f;--y:#f26a3d;--t:#4a93ef;--h:#3cc08b;--colbg:#141b23;--overbg:#1e2a38;--shadow:rgba(0,0,0,.3);color-scheme:dark}}
-:root[data-theme="dark"]{--bg:#11161d;--panel:#18202a;--fg:#e6ebf1;--mut:#97a3b2;--line:#2b3542;--empty:#2a333f;--y:#f26a3d;--t:#4a93ef;--h:#3cc08b;--colbg:#141b23;--overbg:#1e2a38;--shadow:rgba(0,0,0,.3);color-scheme:dark}
-body{background:var(--bg);color:var(--fg);font-family:var(--body);padding-left:max(16px,env(safe-area-inset-left,0px));padding-right:max(16px,env(safe-area-inset-right,0px));padding-block:16px}
-h1{font-family:var(--disp);font-size:1.4rem;margin:0}
-header{display:flex;flex-wrap:wrap;gap:12px;align-items:center;justify-content:space-between;margin-bottom:12px}
-.leg{display:flex;flex-wrap:wrap;gap:8px}
-.chip{display:flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:4px 10px;cursor:pointer;font:inherit;color:inherit}
+/* Üstte sekmeler; Harita: harita + il paneli; Pano: üç sütun; Özet: göstergeler + tablolar */
+:root{
+  --bg:#f3f5f7;--panel:#fff;--fg:#1b2430;--mut:#5f6b7a;--line:#d6dce3;--empty:#e3e7ec;
+  --colbg:#e9edf1;--overbg:#d8e3f0;--shadow:rgba(20,30,45,.06);
+  --y:#d9481c;--t:#1f6fd1;--h:#1f9d6b;
+  --late:#b4232f;--latebg:#fbe9eb;--ok:#1f7a52;
+  --disp:"Sora",system-ui,sans-serif;--body:"IBM Plex Sans",system-ui,sans-serif;
+  color-scheme:light
+}
+@media (prefers-color-scheme:dark){:root{
+  --bg:#11161d;--panel:#18202a;--fg:#e6ebf1;--mut:#97a3b2;--line:#2b3542;--empty:#2a333f;
+  --colbg:#141b23;--overbg:#1e2a38;--shadow:rgba(0,0,0,.3);
+  --y:#e0603a;--t:#4a93ef;--h:#2ea576;
+  --late:#ff7b7b;--latebg:#3a1d22;--ok:#55c995;color-scheme:dark}}
+*{box-sizing:border-box}
+html,body{margin:0}
+body{background:var(--bg);color:var(--fg);font:14px/1.45 var(--body);
+  padding:max(12px,env(safe-area-inset-top)) max(16px,env(safe-area-inset-right)) max(16px,env(safe-area-inset-bottom)) max(16px,env(safe-area-inset-left))}
+h1{font:700 1.3rem var(--disp);margin:0}
+[hidden]{display:none!important}
+button{font:inherit;color:inherit}
+.b{border:1px solid var(--line);background:var(--bg);border-radius:6px;padding:7px 12px;cursor:pointer}
+.b:hover{border-color:var(--mut)}
+.b.p{background:var(--fg);color:var(--panel);border-color:var(--fg)}
+.b.sm{padding:4px 9px;font-size:.85rem}
+.b:disabled{opacity:.5;cursor:default}
+.danger{color:var(--late)!important;border-color:var(--late)!important}
+:focus-visible{outline:2px solid var(--t);outline-offset:1px}
+label{font-size:.72rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);display:flex;flex-direction:column;gap:4px}
+input,select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px;text-transform:none;letter-spacing:0;min-width:0}
+input:disabled,select:disabled,textarea:disabled{opacity:.7}
+textarea{resize:vertical}
+.row{display:flex;gap:8px;flex-wrap:wrap;align-items:center}
+.sp{flex:1}
+.stats{font-size:.82rem;color:var(--mut);font-variant-numeric:tabular-nums}
+.err{color:var(--late);font-size:.85rem;min-height:1.1em}
+.dot{width:10px;height:10px;border-radius:50%;flex:none;display:inline-block}
+
+/* Üst bar */
+header{display:flex;flex-wrap:wrap;gap:10px 14px;align-items:center;margin-bottom:12px}
+.tabs{display:flex;gap:2px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
+.tabs button{font-weight:500;border:0;background:none;color:var(--mut);padding:6px 14px;border-radius:6px;cursor:pointer}
+.tabs button[aria-selected="true"]{background:var(--fg);color:var(--panel)}
+.who{display:flex;gap:6px;align-items:center;flex-wrap:wrap;margin-left:auto}
+.who .me{font-size:.85rem;color:var(--mut)}
+.leg{display:flex;flex-wrap:wrap;gap:6px}
+.chip{display:flex;gap:6px;align-items:center;border:1px solid var(--line);background:var(--panel);border-radius:99px;padding:4px 10px;cursor:pointer}
 .chip[aria-pressed="false"]{opacity:.45}
-.dot{width:10px;height:10px;border-radius:50%}
-.wrap{display:grid;grid-template-columns:minmax(0,1fr) 340px;gap:16px}
-@media(max-width:860px){.wrap{grid-template-columns:1fr}}
+.chip small{color:var(--mut)}
+
+/* Harita */
+.wrap{display:grid;grid-template-columns:minmax(0,1fr) 360px;gap:16px}
+@media(max-width:900px){.wrap{grid-template-columns:1fr}}
 .map{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:8px;min-width:0}
-svg{width:100%;height:auto;display:block}
-path{stroke:var(--panel);stroke-width:.8;cursor:pointer;transition:opacity .15s}
-path:hover{opacity:.75}path.sel{stroke:var(--fg);stroke-width:2}
-path.dim{opacity:.2}
+.map svg{width:100%;height:auto;display:block}
+.map path{stroke:var(--panel);stroke-width:.8;cursor:pointer;transition:opacity .15s}
+.map path:hover{opacity:.75}
+.map path.sel{stroke:var(--fg);stroke-width:2}
+.map path.dim{opacity:.2}
 .lbl{font:600 7.5px var(--body);fill:var(--fg);stroke:var(--panel);stroke-width:2.2px;paint-order:stroke;stroke-linejoin:round;text-anchor:middle;dominant-baseline:middle;pointer-events:none}
 .lbl.dim{opacity:.35}
-#tip{font-size:.85rem;color:var(--mut);min-height:1.2em;padding:4px}
-aside{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0}
-aside h2{font-family:var(--disp);margin:0;font-size:1.25rem}
-label{font-size:.75rem;text-transform:uppercase;letter-spacing:.05em;color:var(--mut);display:flex;flex-direction:column;gap:4px}
-input,select,textarea{font:inherit;color:var(--fg);background:var(--bg);border:1px solid var(--line);border-radius:6px;padding:7px;text-transform:none;letter-spacing:0}
-textarea{min-height:70px;resize:vertical}
-.jobs{display:flex;flex-direction:column;gap:6px;max-height:220px;overflow:auto}
-.job{border-left:3px solid var(--line);padding:4px 8px;font-size:.9rem;display:flex;justify-content:space-between;gap:8px}
-.job small{color:var(--mut);font-variant-numeric:tabular-nums}
-button.b{font:inherit;border:1px solid var(--line);background:var(--bg);color:var(--fg);border-radius:6px;padding:7px 12px;cursor:pointer}
-button.p{background:var(--fg);color:var(--panel);border-color:var(--fg)}
-button:focus-visible,path:focus-visible{outline:2px solid var(--t)}
-.row{display:flex;gap:8px;flex-wrap:wrap}
-.stats{font-size:.85rem;color:var(--mut);font-variant-numeric:tabular-nums}
-#io{width:100%;min-height:90px;font-family:monospace;font-size:.75rem}
-.x{background:none;border:0;color:var(--mut);cursor:pointer}
-[hidden]{display:none!important}
-.tabs{display:flex;gap:4px;background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:3px}
-.tabs button{font:500 .9rem var(--body);border:0;background:none;color:var(--mut);padding:6px 14px;border-radius:6px;cursor:pointer}
-.tabs button[aria-selected="true"]{background:var(--fg);color:var(--panel)}
+.warn circle{fill:var(--late);stroke:var(--panel);stroke-width:1.2}
+.warn text{font:700 7px var(--body);fill:#fff;text-anchor:middle;dominant-baseline:central}
+.warn{pointer-events:none}
+#tip{font-size:.85rem;color:var(--mut);min-height:1.3em;padding:4px}
+aside{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:16px;display:flex;flex-direction:column;gap:10px;min-width:0;align-self:start}
+aside h2{font:700 1.2rem var(--disp);margin:0}
+aside textarea{min-height:64px}
+.jobs{display:flex;flex-direction:column;gap:6px;max-height:260px;overflow:auto}
+.krow{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:.9rem;background:var(--bg);text-align:left;width:100%}
+.krow .t{overflow-wrap:anywhere;min-width:0}
+.badges{display:flex;gap:4px;flex:none;align-items:center}
+
+/* Durum ve gecikme etiketleri */
+.badge{font-size:.72rem;border-radius:99px;padding:1px 8px;white-space:nowrap;line-height:1.5}
+.d-yapilacak{background:var(--bg);color:var(--mut);border:1px solid var(--line)}
+.d-devam{background:var(--t);color:#fff}
+.d-tamam{background:var(--h);color:#fff}
+.late{background:var(--latebg);color:var(--late);border:1px solid var(--late);font-weight:600}
+
+/* Pano */
 .btool{display:flex;flex-wrap:wrap;gap:8px;align-items:center;margin-bottom:12px}
-.btool input,.btool select{min-width:0}
-.board{display:grid;grid-template-columns:repeat(3,minmax(260px,1fr));gap:12px;overflow-x:auto;padding-bottom:8px;align-items:start}
+.btool .chk{flex-direction:row;align-items:center;gap:6px;text-transform:none;letter-spacing:0;font-size:.9rem;color:var(--fg)}
+.board{display:grid;grid-template-columns:repeat(3,minmax(min(270px,84vw),1fr));scroll-snap-type:x proximity;gap:12px;overflow-x:auto;padding-bottom:8px;align-items:start}
 .col{background:var(--colbg);border:1px solid var(--line);border-radius:10px;padding:10px;display:flex;flex-direction:column;gap:8px;min-width:0}
 .col h3{font:700 .95rem var(--disp);margin:0;display:flex;justify-content:space-between;align-items:center;padding:2px 4px}
 .col h3 small{font:500 .8rem var(--body);color:var(--mut);background:var(--panel);border-radius:99px;padding:1px 8px;font-variant-numeric:tabular-nums}
@@ -55,35 +103,83 @@ button:focus-visible,path:focus-visible{outline:2px solid var(--t)}
 .list.over{background:var(--overbg)}
 .card{background:var(--panel);border:1px solid var(--line);border-left:4px solid var(--line);border-radius:8px;padding:9px 10px;cursor:pointer;display:flex;flex-direction:column;gap:6px;box-shadow:0 1px 2px var(--shadow)}
 .card:hover{border-color:var(--mut)}
+.card.is-late{background:linear-gradient(var(--latebg),var(--latebg)) padding-box}
 .card.drag{opacity:.4}
 .card .tt{font-weight:500;line-height:1.35;overflow-wrap:anywhere}
 .meta{display:flex;flex-wrap:wrap;gap:6px;align-items:center;font-size:.78rem;color:var(--mut);font-variant-numeric:tabular-nums}
 .pill{display:inline-flex;align-items:center;gap:5px;border:1px solid var(--line);border-radius:99px;padding:1px 8px;background:var(--bg);color:var(--fg)}
-.addc{font:inherit;border:0;background:none;color:var(--mut);text-align:left;padding:6px 4px;border-radius:6px;cursor:pointer}
+.av{display:inline-grid;place-items:center;width:22px;height:22px;border-radius:50%;background:var(--fg);color:var(--panel);font-size:.68rem;font-weight:600;text-transform:uppercase;margin-left:auto}
+.ico{display:inline-flex;gap:3px;align-items:center}
+.addc{border:0;background:none;color:var(--mut);text-align:left;padding:6px 4px;border-radius:6px;cursor:pointer}
 .addc:hover{background:var(--panel);color:var(--fg)}
 .comp{display:flex;flex-direction:column;gap:6px}
 .comp textarea{min-height:56px}
-.badge{font-size:.72rem;border-radius:99px;padding:1px 8px;white-space:nowrap}
-.d-yapilacak{background:var(--bg);color:var(--mut);border:1px solid var(--line)}
-.d-devam{background:var(--t);color:#fff}
-.d-tamam{background:var(--h);color:#fff}
-.krow{display:flex;justify-content:space-between;gap:8px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:6px;cursor:pointer;font-size:.9rem;background:var(--bg)}
-.krow span:first-child{overflow-wrap:anywhere;min-width:0}
-dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);padding:0;width:min(520px,calc(100vw - 32px))}
-dialog::backdrop{background:rgba(10,15,22,.45)}
-dialog form{display:flex;flex-direction:column;gap:12px;padding:20px}
-dialog h2{font-family:var(--disp);margin:0;font-size:1.15rem}
+
+/* Kart penceresi */
+dialog{border:1px solid var(--line);border-radius:10px;background:var(--panel);color:var(--fg);padding:0;width:min(640px,calc(100vw - 24px));max-height:calc(100dvh - 24px)}
+dialog::backdrop{background:rgba(10,15,22,.5)}
+.dlg{display:flex;flex-direction:column;gap:12px;padding:20px}
+dialog h2{font:700 1.15rem var(--disp);margin:0}
+dialog h4{font:600 .8rem var(--body);text-transform:uppercase;letter-spacing:.05em;color:var(--mut);margin:6px 0 0}
 .two{display:grid;grid-template-columns:1fr 1fr;gap:10px}
 @media(max-width:480px){.two{grid-template-columns:1fr}}
-.danger{color:var(--y)!important;border-color:var(--y)!important}
-.sp{flex:1}
-.login{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:20;padding:16px}
-.login form:not([hidden]){background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:24px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px}
-.err{color:var(--y);font-size:.85rem;min-height:1.1em}
-.who{display:flex;gap:8px;align-items:center;font-size:.85rem;color:var(--mut)}
+.sect{border-top:1px solid var(--line);padding-top:12px;display:flex;flex-direction:column;gap:8px}
+.files{display:flex;flex-direction:column;gap:6px}
+.file{display:flex;gap:8px;align-items:center;padding:6px 8px;border:1px solid var(--line);border-radius:6px;background:var(--bg);font-size:.9rem}
+.file button.link{border:0;background:none;padding:0;color:var(--t);cursor:pointer;text-align:left;overflow-wrap:anywhere;min-width:0}
+.x{border:0;background:none;color:var(--mut);cursor:pointer;padding:2px 6px;border-radius:4px}
+.x:hover{color:var(--late)}
+.tl{display:flex;flex-direction:column;gap:8px;max-height:280px;overflow:auto}
+.ev{font-size:.88rem;display:flex;gap:8px;align-items:flex-start}
+.ev .who2{font-weight:600}
+.ev .when{color:var(--mut);font-size:.78rem;font-variant-numeric:tabular-nums;white-space:nowrap}
+.ev.olay{color:var(--mut)}
+.ev .bubble{background:var(--bg);border:1px solid var(--line);border-radius:8px;padding:6px 9px;margin-top:3px;color:var(--fg);white-space:pre-wrap;overflow-wrap:anywhere}
+.ev .body{flex:1;min-width:0}
+
+/* Özet */
+.kpis{display:grid;grid-template-columns:repeat(4,minmax(0,1fr));gap:12px;margin-bottom:16px}
+@media(max-width:760px){.kpis{grid-template-columns:repeat(2,minmax(0,1fr))}}
+.kpi{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:12px 14px}
+.kpi b{display:block;font:700 1.9rem var(--disp);font-variant-numeric:tabular-nums;line-height:1.2}
+.kpi span{color:var(--mut);font-size:.85rem}
+.kpi.warnk b{color:var(--late)}
+.grid2{display:grid;grid-template-columns:1fr 1fr;gap:16px}
+@media(max-width:900px){.grid2{grid-template-columns:1fr}}
+.box{background:var(--panel);border:1px solid var(--line);border-radius:8px;padding:14px;min-width:0}
+.box h3{font:700 1rem var(--disp);margin:0 0 10px}
+.tw{overflow-x:auto}
+table{border-collapse:collapse;width:100%;font-variant-numeric:tabular-nums}
+th,td{text-align:left;padding:7px 8px;border-bottom:1px solid var(--line);white-space:nowrap}
+th{font-size:.75rem;text-transform:uppercase;letter-spacing:.04em;color:var(--mut);font-weight:600}
+td.n,th.n{text-align:right}
+td .cell{display:flex;gap:6px;align-items:center}
+.bars{display:flex;flex-direction:column;gap:4px}
+.bar{display:grid;grid-template-columns:110px minmax(0,1fr) 34px;gap:8px;align-items:center;font-size:.88rem;padding:2px 0;border-radius:4px}
+.bar:hover{background:var(--bg)}
+.bar .track{height:14px;display:flex;gap:2px}
+.bar .seg{height:100%;border-radius:0 4px 4px 0;min-width:2px}
+.bar .seg.open{opacity:1}
+.bar .seg.done{opacity:.35;border-radius:0 4px 4px 0}
+.bar .seg.open + .seg.done{border-radius:0 4px 4px 0}
+.bar .num{text-align:right;color:var(--mut);font-variant-numeric:tabular-nums}
+.bar .name{overflow:hidden;text-overflow:ellipsis;white-space:nowrap}
+.legend2{display:flex;gap:14px;flex-wrap:wrap;font-size:.8rem;color:var(--mut);margin-bottom:8px}
+.legend2 i{display:inline-block;width:14px;height:10px;border-radius:2px;background:var(--mut);vertical-align:middle;margin-right:5px}
+.ttip{position:fixed;pointer-events:none;background:var(--fg);color:var(--panel);font-size:.8rem;padding:5px 8px;border-radius:6px;z-index:50;font-variant-numeric:tabular-nums}
+
+/* Giriş */
+.login{position:fixed;inset:0;background:var(--bg);display:grid;place-items:center;z-index:30;padding:16px;overflow:auto}
+.login form:not([hidden]){background:var(--panel);border:1px solid var(--line);border-radius:10px;padding:24px;display:flex;flex-direction:column;gap:12px;width:100%;max-width:340px}
+
+/* Bildirim */
+#toast{position:fixed;left:50%;bottom:max(16px,env(safe-area-inset-bottom));transform:translateX(-50%);background:var(--fg);color:var(--panel);padding:8px 14px;border-radius:8px;font-size:.9rem;z-index:60;max-width:calc(100vw - 32px)}
+@media (prefers-reduced-motion:reduce){*{transition:none!important}}
 </style>
-</head><body>
-<div class="login" id="login"><form id="lf"><h1>Bayi Sorumluluk Haritası</h1>
+</head>
+<body>
+<div class="login" id="login" hidden>
+<form id="lf"><h1>Velamed Bayi</h1>
 <label>Kullanıcı adı<input id="lu" autocomplete="username" required></label>
 <label>Şifre<input id="lp" type="password" autocomplete="current-password" required></label>
 <button class="b p" type="submit">Giriş yap</button><div class="err" id="lerr"></div>
@@ -94,159 +190,95 @@ dialog h2{font-family:var(--disp);margin:0;font-size:1.15rem}
 <label>Şifre tekrar<input id="rp2" type="password" autocomplete="new-password" minlength="6" required></label>
 <label>Referans kodu<input id="rk" autocomplete="off" required></label>
 <button class="b p" type="submit">Kayıt ol</button><div class="err" id="rerr"></div>
-<button class="b" type="button" id="toLog">Girişe dön</button></form></div>
-<header><h1>Bayi Sorumluluk Haritası</h1><nav class="tabs" role="tablist"><button role="tab" id="tMap" aria-selected="true">Harita</button><button role="tab" id="tBoard" aria-selected="false">İş Panosu</button></nav><div class="leg" id="leg"></div><div class="who"><span id="me"></span><button class="b" id="out">Çıkış</button></div></header>
-<div class="wrap" id="vMap">
-<div class="map"><svg viewBox="0 0 1000 428" id="svg" role="img" aria-label="Türkiye il haritası"></svg><div id="tip">Bir ile tıklayın.</div><div class="stats" id="stats"></div><div class="stats" id="sync"></div></div>
-<aside id="side"><p style="color:var(--mut)">Haritadan bir il seçin. Sorumluyu, bayi bilgilerini ve yapılan işleri buradan girebilirsiniz.</p></aside>
+<button class="b" type="button" id="toLog">Girişe dön</button></form>
 </div>
+
+<header>
+<h1>Velamed Bayi</h1>
+<nav class="tabs" role="tablist">
+<button role="tab" id="tMap" aria-selected="true">Harita</button>
+<button role="tab" id="tBoard" aria-selected="false">İş Panosu</button>
+<button role="tab" id="tSum" aria-selected="false">Özet</button>
+</nav>
+<div class="who">
+<span class="me" id="me"></span>
+<button class="b sm" id="bInstall" hidden>Uygulamayı yükle</button>
+<button class="b sm" id="bExport">Excel'e aktar</button>
+<button class="b sm" id="bImport">Excel'den yükle</button>
+<input type="file" id="fImport" accept=".xlsx,.xls,.csv" hidden>
+<button class="b sm" id="bUsers" hidden>Kullanıcılar</button>
+<button class="b sm" id="out">Çıkış</button>
+</div>
+</header>
+
+<section id="vMap">
+<div class="leg" id="leg" style="margin-bottom:10px"></div>
+<div class="wrap">
+<div class="map"><svg viewBox="0 0 1000 428" id="svg" role="img" aria-label="Türkiye il haritası"></svg>
+<div id="tip">Bir ile tıklayın.</div>
+<div class="row"><span class="stats" id="stats"></span><span class="stats" id="sync"></span></div></div>
+<aside id="side"><p class="stats" style="font-size:.9rem">Haritadan bir il seçin. Sorumluyu, bayi bilgilerini ve o ilin işlerini buradan yönetebilirsiniz.</p></aside>
+</div>
+</section>
+
 <section id="vBoard" hidden>
-<div class="btool"><select id="fIl" aria-label="İl filtresi"></select><select id="fSor" aria-label="Sorumlu filtresi"><option value="">Tüm sorumlular</option><option>Yıldırım</option><option>Tuna</option><option>Hakan</option></select><input id="fQ" placeholder="Kartlarda ara" aria-label="Kartlarda ara"><span class="sp"></span><span class="stats" id="bstat"></span></div>
+<div class="btool">
+<select id="fIl" aria-label="İl"></select>
+<select id="fSor" aria-label="Sorumlu"><option value="">Tüm sorumlular</option><option>Yıldırım</option><option>Tuna</option><option>Hakan</option></select>
+<select id="fAt" aria-label="Atanan"></select>
+<input id="fQ" placeholder="Kartlarda ara" aria-label="Kartlarda ara">
+<label class="chk"><input type="checkbox" id="fLate"> Sadece gecikenler</label>
+<span class="sp"></span><span class="stats" id="bstat"></span>
+</div>
 <div class="board" id="cols"></div>
 </section>
-<dialog id="dlg"><form id="kf" method="dialog"><h2 id="kTitle">Kart</h2>
+
+<section id="vSum" hidden></section>
+
+<dialog id="dlg"><div class="dlg">
+<form id="kf" class="dlg" style="padding:0">
+<div class="row"><h2 id="kTitle">Kart</h2><span class="sp"></span><span id="kLate"></span></div>
 <label>Başlık<input id="kB" required></label>
-<div class="two"><label>İl<select id="kIl" required></select></label><label>Durum<select id="kD"></select></label></div>
-<div class="two"><label>Tarih<input type="date" id="kT"></label><label>Sorumlu<input id="kS" disabled></label></div>
-<label>Açıklama<textarea id="kA" rows="5"></textarea></label>
+<div class="two">
+<label>İl<select id="kIl" required></select></label>
+<label>Durum<select id="kD"></select></label>
+<label>Son tarih<input type="date" id="kT"></label>
+<label>Atanan kişi<select id="kAt"></select></label>
+</div>
+<label>Açıklama<textarea id="kA" rows="4"></textarea></label>
 <div class="stats" id="kMeta"></div><div class="err" id="kErr"></div>
-<div class="row"><button class="b" type="button" id="kDel">Sil</button><span class="sp"></span><button class="b" type="button" id="kCancel">İptal</button><button class="b p" type="submit" id="kSave">Kaydet</button></div>
-</form></dialog>
+<div class="row"><button class="b" type="button" id="kDel">Sil</button><span class="sp"></span><button class="b" type="button" id="kCancel">Kapat</button><button class="b p" type="submit" id="kSave">Kaydet</button></div>
+</form>
+<div class="sect" id="kExtra">
+<h4>Dosyalar</h4>
+<div class="files" id="kFiles"></div>
+<div class="row"><button class="b sm" id="kUp">+ Dosya ekle</button><input type="file" id="kFile" multiple hidden><span class="stats" id="kUpMsg"></span></div>
+<h4>Yorumlar ve geçmiş</h4>
+<div class="row" id="kComRow"><textarea id="kCom" rows="2" placeholder="Yorum yazın" style="flex:1;min-width:0"></textarea><button class="b p" id="kComAdd">Gönder</button></div>
+<div class="tl" id="kTl"></div>
+</div>
+<p class="stats" id="kNew" hidden>Kartı kaydettikten sonra dosya ve yorum ekleyebilirsiniz.</p>
+</div></dialog>
+
+<dialog id="uDlg"><div class="dlg">
+<div class="row"><h2>Kullanıcılar</h2><span class="sp"></span><button class="b sm" id="uClose">Kapat</button></div>
+<p class="stats">Yönetici: her şeyi düzenler ve kullanıcıları yönetir. Düzenleyici: tüm illeri düzenler. Kendi illeri: sadece bağlı olduğu sorumlunun illerini düzenler. İzleyici: sadece görüntüler.</p>
+<div class="tw"><table><thead><tr><th>Kullanıcı</th><th>Rol</th><th>Sorumlu olarak</th></tr></thead><tbody id="uBody"></tbody></table></div>
+<div class="err" id="uErr"></div>
+</div></dialog>
+
+<dialog id="iDlg"><div class="dlg">
+<h2>Excel'den yükle</h2>
+<div id="iSum"></div>
+<div class="err" id="iErr"></div>
+<div class="row"><span class="sp"></span><button class="b" id="iCancel">Vazgeç</button><button class="b p" id="iOk">Yükle</button></div>
+</div></dialog>
+
+<div id="toast" hidden></div>
+<div class="ttip" id="ttip" hidden></div>
+
 <script src="https://cdn.jsdelivr.net/npm/@supabase/supabase-js@2.45.4/dist/umd/supabase.min.js"></script>
 <script src="config.js"></script>
-<script>
-const P=[{"n": "Adana", "d": "M501.5,371.6L501.6,371.7L501.7,371.8L501.5,371.6L501.5,371.6ZM501.1,371.3L501.2,371.4L501.2,371.5L501.1,371.4L501.1,371.3ZM497.8,370.9L497.9,371.0L497.9,371.0L497.7,371.0L497.8,370.9ZM498.0,370.6L498.0,370.7L498.0,370.8L497.9,370.6L498.0,370.6ZM498.1,370.3L498.1,370.4L498.0,370.4L498.0,370.3L498.1,370.3ZM497.9,369.0L498.0,369.1L498.0,369.2L497.8,369.1L497.9,369.0ZM517.7,367.3L517.7,367.6L517.7,367.6L517.6,367.4L517.7,367.3ZM518.5,367.3L518.5,367.6L518.2,367.6L518.4,367.3L518.5,367.3ZM522.4,366.5L522.3,366.8L522.1,366.7L522.3,366.5L522.4,366.5ZM523.2,365.8L523.5,366.0L523.5,366.0L523.2,366.0L523.2,365.8ZM555.9,286.1L555.4,291.9L554.5,304.0L540.6,309.4L532.7,331.4L531.2,339.0L538.9,335.9L542.0,340.3L536.1,350.4L535.4,355.6L528.2,363.2L519.5,364.6L518.8,365.5L518.1,367.6L516.2,366.8L516.6,367.2L519.7,366.2L520.9,365.0L521.1,365.7L523.7,366.7L524.5,366.8L519.3,374.0L516.4,376.6L504.6,378.4L503.7,376.1L501.8,372.5L501.1,370.8L499.9,370.7L500.1,369.1L495.5,369.2L501.2,373.7L486.9,366.7L484.4,364.0L490.5,359.7L489.9,349.5L483.2,341.6L476.0,322.2L479.8,312.5L477.5,303.6L480.3,300.1L491.3,299.5L497.8,286.5L510.7,286.1L522.3,276.7L547.2,253.1L558.4,249.6L564.3,259.6L556.2,280.9Z"}, {"n": "Adıyaman", "d": "M676.4,274.6L694.6,272.9L700.1,268.4L704.9,267.9L705.2,277.2L693.9,286.5L693.2,294.4L685.5,301.2L685.5,304.6L667.3,314.9L650.6,320.4L641.6,314.4L625.9,313.3L620.4,310.8L612.3,306.4L621.5,292.4L630.5,289.7L641.5,290.0L649.5,274.7L670.3,265.3L674.8,269.4L676.4,274.6Z"}, {"n": "Afyon", "d": "M298.6,202.9L303.6,208.0L316.5,217.0L310.3,232.2L315.0,238.4L290.6,251.3L284.4,246.5L261.2,264.3L247.0,276.0L239.6,282.0L238.3,290.8L232.7,295.6L220.0,296.7L213.5,290.6L210.7,281.5L229.0,268.9L229.9,263.9L215.3,250.4L221.4,237.7L231.9,228.0L242.0,208.0L250.5,202.9L254.2,201.2L259.7,208.6L267.7,205.3L273.9,199.7L287.1,199.3L295.6,195.6Z"}, {"n": "Ağrı", "d": "M922.1,152.0L925.2,162.6L929.1,159.0L939.9,160.4L961.6,167.5L968.9,169.0L979.1,167.4L976.0,176.4L975.8,182.3L975.3,186.5L965.0,186.5L961.2,188.7L960.8,187.1L955.9,189.8L951.4,190.1L935.0,193.7L927.2,192.0L916.8,187.0L906.8,192.3L905.9,194.9L910.2,202.8L900.1,208.5L888.6,211.4L884.6,197.2L876.5,188.8L873.8,181.4L876.0,165.1L864.5,159.5L864.1,154.9L879.1,150.6L886.6,152.5L920.9,149.7Z"}, {"n": "Aksaray", "d": "M445.9,224.5L448.8,227.7L445.9,235.4L449.4,239.3L453.3,249.1L455.7,251.4L454.3,256.2L454.1,261.3L455.7,264.5L455.4,269.9L452.3,271.7L449.1,277.0L444.9,276.0L442.8,277.3L441.7,279.8L423.7,283.7L409.1,285.2L404.8,284.0L402.2,280.5L395.9,266.3L396.0,263.7L399.0,257.5L399.9,252.0L403.1,243.1L407.5,238.2L418.7,233.2L426.2,232.9L431.3,228.5L432.5,225.3L429.4,216.9L431.4,213.3L439.3,220.3L444.4,221.8L445.9,224.5Z"}, {"n": "Amasya", "d": "M523.4,88.4L536.5,88.5L548.2,86.6L552.3,81.6L558.4,86.4L560.5,92.1L563.4,99.8L555.7,112.0L544.6,117.2L536.7,113.5L524.2,125.2L514.5,131.3L506.3,134.0L504.9,123.1L511.1,108.7L500.4,102.5L491.3,99.4L489.4,90.0L491.8,78.0L512.2,79.4L521.5,87.3Z"}, {"n": "Ankara", "d": "M393.2,119.4L397.3,124.9L402.3,121.3L421.2,128.4L413.3,143.8L415.4,152.9L405.9,159.5L400.0,170.5L398.2,183.0L398.3,191.8L403.6,195.3L405.0,203.1L414.4,202.4L429.4,216.9L431.3,228.5L418.7,233.2L402.2,227.8L393.2,195.4L386.3,199.3L381.5,205.4L374.9,203.7L368.0,211.7L355.9,214.2L338.3,211.8L325.6,202.3L332.2,188.4L326.8,172.9L323.7,162.5L324.2,155.4L315.9,147.8L288.9,144.1L276.9,145.6L275.3,140.4L277.5,132.1L281.7,121.9L287.3,120.4L309.2,126.4L320.9,124.9L339.1,118.7L356.3,111.6L357.6,100.0L381.1,107.1Z"}, {"n": "Antalya", "d": "M209.3,406.3L209.6,406.7L208.7,407.2L208.7,407.0L209.3,406.3ZM210.5,405.3L210.4,405.7L210.1,405.5L210.1,405.4L210.5,405.3ZM215.3,405.0L215.9,405.6L214.4,406.2L214.5,405.9L215.3,405.0ZM210.1,404.8L210.2,404.9L210.0,405.0L210.0,404.8L210.1,404.8ZM208.5,404.1L208.7,404.3L208.4,404.3L208.4,404.2L208.5,404.1ZM208.9,404.1L208.9,404.2L208.7,404.3L208.8,404.2L208.9,404.1ZM201.7,403.7L201.8,403.9L201.9,403.7L203.0,403.9L201.4,404.3L201.7,403.7ZM208.6,403.5L208.7,403.6L208.5,403.7L208.5,403.6L208.6,403.5ZM208.8,403.5L208.8,403.6L208.8,403.7L208.7,403.6L208.8,403.5ZM206.9,403.3L206.7,404.4L207.6,404.7L205.1,406.3L206.9,403.3ZM221.4,403.1L221.4,403.2L221.3,403.3L221.3,403.1L221.4,403.1ZM219.5,403.0L219.6,403.2L219.5,403.2L219.4,403.1L219.5,403.0ZM219.3,403.1L219.3,403.0L219.5,402.9L219.5,403.0L219.3,403.1ZM204.6,401.9L204.8,402.1L204.8,402.2L204.5,402.1L204.6,401.9ZM223.5,401.6L223.4,401.8L223.3,401.8L223.3,401.8L223.5,401.6ZM249.1,401.6L249.2,402.4L249.1,402.7L248.8,401.6L249.1,401.6ZM223.6,401.2L221.8,403.1L221.9,402.6L219.7,403.1L223.6,401.2ZM249.0,400.8L248.9,401.2L248.7,401.2L248.8,400.9L249.0,400.8ZM198.9,400.7L198.8,401.1L198.7,401.1L198.7,400.8L198.9,400.7ZM222.8,400.6L223.0,400.8L222.9,401.0L222.7,400.9L222.8,400.6ZM223.2,400.2L222.9,400.6L222.5,400.4L222.7,400.3L223.2,400.2ZM195.1,399.8L194.4,400.4L194.1,400.5L194.2,400.1L195.1,399.8ZM195.5,399.4L195.5,399.7L195.2,399.7L195.3,399.4L195.5,399.4ZM252.5,398.3L252.9,398.9L252.8,399.0L252.3,398.6L252.5,398.3ZM235.5,396.7L235.4,396.8L235.2,396.7L235.2,396.7L235.5,396.7ZM256.7,383.6L256.7,383.8L256.3,383.8L256.5,383.6L256.7,383.6ZM314.2,371.1L314.2,371.2L314.1,371.2L314.1,371.1L314.2,371.1ZM258.5,360.6L258.6,360.7L258.6,360.9L258.4,360.8L258.5,360.6ZM303.1,324.6L323.7,328.3L346.7,357.5L356.0,364.2L357.7,376.9L365.7,384.6L365.1,395.5L359.3,408.2L346.9,398.7L342.8,392.0L333.1,378.4L331.6,379.0L330.0,377.2L318.4,371.7L308.9,366.8L299.8,362.2L280.1,357.0L264.3,355.3L257.8,361.3L256.7,371.2L258.6,375.0L257.3,378.8L254.3,383.1L252.9,385.4L252.7,387.8L252.2,393.4L253.3,394.4L249.0,400.4L247.2,396.4L238.4,393.3L235.8,396.2L234.0,397.9L227.0,400.1L222.3,400.3L220.0,401.3L220.2,401.5L219.1,403.1L215.5,405.0L213.6,403.5L211.3,404.2L208.8,403.1L209.9,402.8L206.4,402.0L199.9,399.6L199.7,399.3L197.1,398.1L196.5,396.8L195.6,397.8L192.4,397.9L191.6,393.1L193.1,384.8L207.5,362.3L211.6,353.0L218.1,348.2L223.8,335.0L244.3,327.0L248.4,331.3L266.9,331.8L273.7,323.3L279.6,324.7L292.2,319.4L299.2,322.8Z"}, {"n": "Ardahan", "d": "M889.3,41.1L892.3,44.4L891.7,47.3L894.6,46.8L896.6,48.1L902.8,54.9L908.3,59.0L908.0,63.2L913.6,67.3L916.2,68.1L915.1,74.2L910.6,80.0L897.2,85.1L894.8,95.6L886.2,101.5L878.1,104.2L869.4,91.3L866.9,81.4L875.1,69.8L880.0,65.1L874.2,50.8L876.5,48.2L879.8,42.4L886.4,40.2Z"}, {"n": "Artvin", "d": "M828.5,45.9L834.7,46.9L838.4,49.2L847.4,45.1L854.3,46.0L860.3,47.2L867.0,48.7L874.2,50.8L880.0,65.1L875.1,69.8L866.9,81.4L854.9,82.6L848.4,89.8L840.6,105.7L831.5,102.8L816.7,108.3L818.5,97.3L808.2,94.9L815.4,78.1L819.9,74.0L817.0,72.2L811.2,66.3L808.9,60.0L819.2,54.4L825.0,47.9L828.5,45.9Z"}, {"n": "Aydın", "d": "M89.6,325.4L89.8,325.5L89.7,326.1L89.4,325.8L89.6,325.4ZM93.9,319.9L93.8,320.2L93.7,320.2L93.7,320.0L93.9,319.9ZM82.0,309.9L82.0,310.1L82.0,310.1L81.9,310.1L82.0,309.9ZM79.8,306.5L79.9,307.0L80.8,308.3L79.7,307.0L79.8,306.5ZM72.8,303.9L72.8,304.2L72.5,304.2L72.6,304.0L72.8,303.9ZM73.3,303.8L73.3,304.0L73.0,303.9L73.1,303.8L73.3,303.8ZM73.5,301.3L73.5,301.4L73.4,301.4L73.4,301.3L73.5,301.3ZM166.6,278.3L165.4,287.0L168.3,296.6L162.7,307.5L154.1,308.0L153.2,311.2L148.2,314.3L135.8,310.0L118.4,317.0L98.8,309.2L94.0,319.8L91.2,322.7L89.7,324.7L85.7,325.1L83.8,321.3L84.5,320.4L84.3,316.0L82.0,315.9L83.0,313.1L82.4,314.7L82.5,311.1L80.8,308.4L81.4,310.2L81.6,311.0L79.0,305.4L74.2,301.4L84.4,299.4L86.4,293.0L85.0,290.1L86.3,288.0L95.4,286.3L99.7,281.9L112.7,282.6L121.2,279.5L128.1,278.8L154.4,273.3L161.6,274.1L166.6,278.3Z"}, {"n": "Balıkesir", "d": "M51.7,193.6L52.0,195.0L50.6,195.4L51.3,193.7L51.7,193.6ZM48.2,192.4L48.0,192.5L47.9,192.4L48.2,192.4L48.2,192.4ZM54.9,192.2L54.9,192.3L54.7,192.2L54.7,192.2L54.9,192.2ZM48.7,191.7L48.9,192.1L48.2,192.2L48.3,191.7L48.7,191.7ZM52.2,191.0L52.5,191.6L51.6,191.4L51.9,191.0L52.2,191.0ZM50.7,190.8L50.8,191.2L50.4,191.6L50.5,191.1L50.7,190.8ZM56.7,190.5L56.8,190.9L56.1,190.8L56.1,190.7L56.7,190.5ZM51.6,190.5L51.9,190.9L51.1,191.0L51.1,190.6L51.6,190.5ZM55.6,190.2L55.5,190.3L55.2,190.4L55.2,190.3L55.6,190.2ZM56.8,189.0L56.9,189.2L56.8,189.3L56.7,189.1L56.8,189.0ZM58.4,188.5L58.4,188.7L58.2,188.7L58.3,188.6L58.4,188.5ZM60.5,188.5L60.5,188.8L60.1,189.0L60.2,188.8L60.5,188.5ZM57.4,188.3L57.5,188.9L57.2,188.9L57.1,188.5L57.4,188.3ZM50.4,188.1L50.5,188.4L50.2,188.6L50.2,188.2L50.4,188.1ZM52.6,187.4L55.4,187.8L53.0,189.1L56.5,191.6L53.0,192.1L52.2,190.4L53.0,190.1L52.7,188.5L51.7,188.1L52.6,187.4ZM51.3,187.3L52.0,187.5L51.2,189.3L50.6,187.8L51.3,187.3ZM57.6,186.5L57.6,186.7L57.3,186.8L57.3,186.6L57.6,186.5ZM113.5,121.8L113.4,122.1L113.0,122.1L113.0,121.9L113.5,121.8ZM129.1,116.7L129.2,117.0L128.8,116.8L129.0,116.6L129.1,116.7ZM127.8,116.1L128.2,116.2L128.5,116.8L127.6,116.5L127.8,116.1ZM106.9,115.8L107.1,117.2L106.5,117.3L106.3,116.8L106.9,115.8ZM129.5,115.7L129.8,115.7L129.8,115.8L129.4,115.9L129.5,115.7ZM101.9,115.7L101.9,115.8L101.8,115.9L101.6,115.7L101.9,115.7ZM104.7,112.9L104.9,113.8L106.3,114.1L105.3,115.5L106.2,116.8L102.5,116.1L102.7,114.8L104.0,114.9L103.6,113.0L104.7,112.9ZM109.3,111.9L109.3,111.9L109.3,112.1L109.2,112.0L109.3,111.9ZM102.8,111.7L102.9,113.2L102.6,114.0L102.2,113.7L102.8,111.7ZM111.6,111.7L113.2,113.2L117.7,112.5L124.7,117.6L122.0,123.5L135.5,120.4L130.7,133.0L131.5,141.8L140.1,155.8L151.4,162.7L165.2,172.1L173.4,173.4L172.8,177.1L170.1,189.4L158.6,198.3L155.6,201.9L133.0,211.0L127.3,202.4L119.0,198.1L120.1,191.9L118.2,190.8L107.7,190.7L99.3,186.2L81.7,185.7L61.4,202.4L57.9,196.6L53.1,193.1L54.8,193.6L55.5,195.2L56.4,193.0L62.5,187.7L65.0,184.5L69.0,181.4L68.5,174.9L64.2,176.6L55.1,176.6L56.4,167.2L64.5,166.4L77.3,159.7L86.2,162.4L97.0,154.6L97.8,149.5L98.8,139.0L102.3,128.9L105.3,125.2L112.0,126.6L115.2,120.3L113.1,119.7L111.5,117.0L108.0,113.4ZM99.4,111.1L101.2,112.2L99.7,113.6L100.4,114.4L97.9,115.8L97.3,114.0L99.4,111.1ZM98.5,110.0L98.8,110.4L96.6,111.0L96.7,110.4L98.5,110.0ZM111.9,104.7L111.9,104.9L111.7,104.8L111.7,104.7L111.9,104.7ZM97.7,103.8L97.9,103.9L97.8,104.5L97.4,104.2L97.7,103.8ZM107.7,102.7L107.8,102.8L107.6,103.0L107.6,102.8L107.7,102.7ZM105.5,102.4L111.1,104.8L104.1,108.7L100.0,107.2L100.1,103.8L105.5,102.4Z"}, {"n": "Bartın", "d": "M351.8,29.7L351.8,30.0L351.7,30.0L351.7,29.8L351.8,29.7ZM367.1,24.4L371.0,31.3L374.5,40.4L379.6,43.2L374.3,45.9L372.6,45.1L370.8,47.5L367.8,49.2L364.3,56.4L353.8,63.2L350.0,64.3L347.4,59.7L332.9,43.5L333.1,41.8L334.8,42.1L334.3,41.3L339.3,39.6L340.9,38.0L340.6,37.4L343.5,35.4L343.2,34.4L346.3,32.1L349.2,31.9L351.4,29.8L353.1,30.8L357.4,26.6L361.3,26.0L361.7,24.9L367.1,24.4Z"}, {"n": "Batman", "d": "M828.3,244.5L832.2,252.2L833.1,266.9L829.4,278.2L822.8,281.6L819.3,286.4L835.8,290.4L834.2,295.6L841.4,296.5L843.2,298.1L827.6,309.0L807.7,310.3L800.6,298.1L803.7,293.8L799.6,290.1L808.9,273.7L809.1,266.3L810.0,254.5L816.1,249.2L820.4,247.5L820.2,245.2Z"}, {"n": "Bayburt", "d": "M772.1,112.0L773.4,114.8L775.3,126.9L778.8,130.5L786.9,131.8L787.4,133.4L785.7,136.8L779.6,139.5L770.8,145.4L765.5,145.5L751.9,142.4L739.9,146.5L735.0,151.7L730.8,148.7L730.1,146.1L732.7,141.9L735.9,139.3L736.7,137.0L737.0,130.3L738.6,125.3L740.1,123.8L745.5,122.4L748.5,119.0L750.9,112.8L757.0,113.6L771.2,111.3L772.1,112.0Z"}, {"n": "Bilecik", "d": "M235.1,122.4L243.7,120.1L252.1,121.0L260.3,124.6L265.6,135.6L257.6,137.2L255.1,146.6L252.1,150.3L246.4,151.3L240.9,156.7L234.4,155.9L231.0,157.5L228.0,162.3L228.1,165.1L230.3,167.6L225.5,168.3L213.6,164.4L211.7,158.7L212.1,155.1L211.2,153.4L216.1,153.3L217.0,151.7L217.1,149.2L213.7,146.9L211.8,142.8L214.1,134.3L217.6,131.2L219.2,128.0L217.9,124.0L217.9,119.6L219.6,115.5L222.4,112.6L224.9,111.5L227.0,115.9L235.1,122.4Z"}, {"n": "Bingöl", "d": "M794.9,179.5L804.7,183.2L807.6,191.7L808.5,203.0L812.1,206.5L806.0,220.2L793.3,241.1L772.0,241.1L769.2,248.7L761.5,244.0L758.6,237.6L764.6,232.3L764.4,223.1L761.0,217.6L766.7,203.5L764.5,198.8L748.3,204.6L749.5,196.0L756.6,194.6L763.5,185.3L774.3,177.3L790.8,176.1L794.9,179.5Z"}, {"n": "Bitlis", "d": "M908.6,218.7L911.8,225.4L904.5,232.4L898.8,239.7L887.5,250.1L888.0,262.2L888.9,269.0L890.0,272.2L888.0,279.8L869.0,271.5L860.5,266.2L851.1,272.1L845.4,270.8L833.1,256.8L828.6,244.6L827.5,241.6L842.7,241.3L852.7,234.3L849.7,228.0L856.8,225.7L865.8,218.2L878.8,217.7L889.6,217.9L892.6,209.5L901.9,214.8Z"}, {"n": "Bolu", "d": "M327.1,78.9L346.2,84.1L359.6,93.0L353.9,103.5L351.7,118.7L339.1,118.7L320.9,124.9L309.2,126.4L287.3,120.4L281.7,121.9L277.5,132.1L265.6,135.6L260.3,124.6L258.9,117.3L270.9,112.3L277.0,108.8L281.2,103.0L293.5,103.8L301.9,100.2L304.1,88.8L315.6,85.9L319.1,81.0L317.9,77.4Z"}, {"n": "Burdur", "d": "M256.0,300.5L264.4,302.2L275.0,320.9L273.1,323.9L266.9,331.8L248.4,331.3L242.9,327.1L221.6,336.8L218.9,346.6L211.6,353.0L204.5,345.7L199.3,349.9L197.3,346.9L196.7,337.4L203.3,326.5L206.2,318.5L203.5,308.0L227.7,295.3L232.2,300.5L247.2,292.1L256.0,300.5Z"}, {"n": "Bursa", "d": "M152.3,109.1L153.1,109.3L152.1,110.4L152.6,111.9L151.5,112.9L151.2,109.3L152.3,109.1ZM224.3,109.7L220.6,114.3L217.9,124.0L217.6,131.2L211.8,142.8L217.1,149.2L215.6,153.5L204.1,154.2L197.5,153.1L190.0,167.6L187.7,176.8L176.0,176.0L166.2,172.7L159.1,163.4L141.9,156.1L135.3,145.0L130.8,139.4L135.5,120.4L149.8,121.7L151.1,120.7L165.6,120.7L172.3,123.3L179.0,122.8L184.2,118.6L177.8,115.1L178.5,109.7L195.0,108.3L205.4,109.9L224.1,108.4Z"}, {"n": "Çanakkale", "d": "M23.5,157.2L24.6,158.0L25.1,160.3L23.9,161.3L18.8,157.9L23.5,157.2ZM25.2,152.4L25.3,152.6L24.9,152.5L25.1,152.4L25.2,152.4ZM23.5,151.6L23.5,151.7L23.3,151.7L23.4,151.6L23.5,151.6ZM23.9,151.0L24.5,151.3L24.8,151.2L24.9,151.2L24.2,151.6L23.9,151.0ZM17.9,130.9L19.5,132.6L19.0,137.0L20.1,137.4L21.4,136.1L20.4,138.3L7.2,141.0L3.4,138.7L3.7,136.8L9.6,133.0L12.6,132.9L17.9,130.9ZM57.7,121.1L57.8,121.6L57.3,121.4L57.4,121.2L57.7,121.1ZM87.4,115.3L88.3,120.2L98.1,126.5L102.3,128.9L98.8,138.6L97.8,149.5L97.0,154.6L86.2,162.4L77.3,159.7L64.5,166.4L56.4,167.2L55.4,176.6L44.5,179.0L39.8,181.8L33.3,182.9L27.5,183.6L26.2,174.8L29.2,169.8L28.9,162.0L27.8,157.7L28.5,152.7L31.0,146.4L38.0,145.2L42.0,139.1L41.9,136.7L44.0,134.1L50.4,128.3L56.6,123.5L59.7,120.1L70.1,121.4L77.2,117.5L83.2,118.0ZM74.7,97.0L74.1,107.6L72.3,109.9L67.4,111.2L57.0,116.7L57.0,119.0L54.0,120.1L53.4,122.8L51.4,125.6L47.1,127.8L42.7,132.3L39.3,133.5L40.5,137.5L32.3,143.7L29.5,144.0L35.2,132.6L35.2,130.1L32.6,127.7L33.5,127.0L33.3,126.1L32.0,125.7L36.7,122.6L37.9,122.7L44.3,117.5L53.1,113.1L57.2,112.9L59.4,109.7L59.5,110.5L60.6,110.6L64.0,108.2L63.1,103.8L60.1,100.8L61.3,97.2L65.2,97.3L71.9,93.4L73.8,94.2L74.7,97.0Z"}, {"n": "Çankırı", "d": "M424.1,82.7L426.4,85.8L437.1,90.2L438.2,93.5L437.6,101.5L440.6,112.3L443.5,118.2L443.4,120.4L440.8,125.3L433.4,129.6L420.6,128.3L404.7,121.0L402.3,121.3L400.6,124.7L397.3,124.9L394.9,123.6L392.3,118.0L381.4,107.2L365.5,100.1L357.6,100.0L359.6,93.7L358.5,91.0L362.0,87.4L367.5,83.0L384.9,79.1L387.4,74.3L393.0,75.2L398.8,78.6L401.5,81.9L404.5,82.9L426.7,73.8L427.9,75.0L428.0,76.7L424.4,80.5L424.1,82.7Z"}, {"n": "Çorum", "d": "M477.7,66.7L481.5,63.3L486.0,74.6L491.9,74.2L489.6,83.5L488.3,90.7L495.4,102.4L505.0,104.2L511.0,108.4L504.9,123.1L502.0,132.8L496.3,141.0L482.9,143.7L455.7,147.6L443.2,151.5L438.7,150.0L443.0,142.1L439.4,132.2L440.8,125.3L437.6,101.5L437.1,90.2L449.7,81.8L446.1,77.5L457.6,59.8L462.3,61.7Z"}, {"n": "Denizli", "d": "M220.5,252.3L230.1,265.1L224.1,273.8L210.6,290.6L218.4,292.8L203.5,308.0L206.2,318.5L203.3,326.5L196.3,342.5L193.2,350.5L186.1,355.1L180.1,344.4L179.4,340.6L172.5,333.7L162.9,323.8L156.0,316.0L155.8,306.8L169.9,301.0L163.9,291.2L169.2,281.2L160.9,274.9L165.9,266.1L187.6,267.7L204.4,267.7L206.9,262.5L211.6,251.9L220.5,252.3Z"}, {"n": "Diyarbakır", "d": "M818.3,241.0L820.4,247.8L816.1,249.2L809.1,258.5L809.8,269.0L803.4,286.3L800.6,292.4L802.8,296.4L787.7,299.6L783.2,296.7L777.3,294.9L773.8,302.4L767.8,304.4L751.0,308.2L740.0,310.4L738.9,297.7L733.8,291.9L715.7,281.1L703.6,278.7L707.0,269.2L702.6,269.1L701.7,262.5L708.1,256.1L715.0,258.3L732.3,255.9L739.0,247.4L768.8,248.9L771.9,241.3L793.3,241.1L817.2,237.7Z"}, {"n": "Düzce", "d": "M297.4,71.1L302.5,76.4L317.9,77.4L319.1,79.2L319.1,81.0L317.9,83.9L314.4,86.6L311.1,88.1L304.1,88.8L302.2,93.2L301.9,100.2L298.5,102.8L293.5,103.8L289.7,101.5L281.2,103.0L277.4,101.4L279.1,98.8L274.2,95.0L273.2,91.6L275.0,87.1L280.2,82.8L281.6,79.8L278.5,75.4L291.0,73.7L297.4,71.1Z"}, {"n": "Edirne", "d": "M59.0,105.7L59.1,106.1L58.6,106.0L58.7,105.8L59.0,105.7ZM59.9,105.5L60.0,105.6L59.8,105.7L59.8,105.5L59.9,105.5ZM22.3,96.7L22.3,96.8L22.4,96.9L22.3,96.8L22.3,96.7ZM21.3,94.3L21.9,95.0L22.1,95.4L22.1,95.6L21.3,94.3ZM71.1,15.2L70.1,31.0L68.5,36.3L72.5,43.0L66.3,54.3L67.2,60.6L69.4,67.2L60.8,73.5L59.3,77.9L58.6,86.7L61.3,97.2L61.8,103.1L48.4,107.5L42.2,107.0L36.5,107.6L25.3,106.4L24.0,101.4L27.2,96.6L32.0,91.1L32.6,87.0L34.4,85.4L36.3,86.2L39.0,83.2L39.0,80.1L37.3,76.0L36.8,72.3L36.6,68.5L42.0,62.9L51.4,58.2L53.6,51.6L51.6,39.1L46.5,35.5L38.3,29.5L49.0,24.0L51.1,19.7L53.0,14.9L61.2,14.8L65.5,14.2L71.1,15.2Z"}, {"n": "Elazığ", "d": "M764.2,206.7L760.9,217.2L764.6,223.4L764.6,232.3L758.5,238.5L761.5,243.6L748.9,249.0L736.3,252.3L723.9,256.0L711.8,258.1L692.7,260.1L677.9,253.2L664.8,249.0L660.6,242.4L666.9,231.5L675.2,222.1L674.3,213.2L681.5,211.6L682.4,220.7L696.8,221.0L727.0,227.1L736.1,224.7L740.6,214.4L742.1,208.0L753.2,204.0L766.7,203.5Z"}, {"n": "Erzincan", "d": "M759.9,153.3L772.5,154.1L773.6,161.0L781.9,167.7L778.3,178.6L753.5,176.6L740.2,177.1L730.5,183.7L726.3,184.2L724.6,181.2L710.6,180.5L699.4,183.0L685.0,192.6L685.7,196.7L690.0,198.6L680.1,206.3L677.8,213.6L674.5,208.6L664.1,206.0L662.9,199.6L660.6,178.0L663.9,164.0L665.8,161.3L671.2,158.6L663.3,158.7L662.3,154.0L680.0,149.9L682.6,143.8L700.3,146.2L714.2,154.6L733.2,152.9L752.4,142.4L758.7,150.6Z"}, {"n": "Erzurum", "d": "M866.9,81.4L869.4,91.3L879.2,106.0L876.1,119.8L857.5,127.7L860.4,135.9L875.6,144.3L879.1,150.6L864.1,154.9L864.5,159.5L876.1,165.5L874.2,181.2L860.8,186.5L861.2,190.8L853.6,199.0L835.2,202.3L824.7,191.6L809.3,190.1L799.5,182.7L792.8,176.8L781.5,179.7L778.2,175.1L775.3,163.7L774.1,157.4L771.0,153.3L758.8,151.7L771.2,145.3L785.4,137.0L786.6,131.6L776.8,129.2L775.1,126.6L771.9,111.3L804.3,93.0L817.9,95.4L815.5,103.6L820.1,109.4L834.9,102.9L845.0,103.8L850.4,84.8L863.9,82.5Z"}, {"n": "Eskişehir", "d": "M278.4,145.8L311.8,146.0L321.1,154.9L325.7,159.8L323.8,165.1L331.4,180.7L331.2,198.8L323.3,206.8L314.4,207.3L299.8,206.0L292.3,194.9L279.2,203.2L269.4,202.4L260.0,208.7L254.2,201.2L249.5,194.7L244.3,181.6L237.7,167.3L228.0,164.8L231.8,156.9L240.9,156.7L250.1,151.2L255.1,146.6L265.6,135.6L275.3,140.4L278.4,145.8Z"}, {"n": "Gaziantep", "d": "M638.2,313.4L645.2,318.3L639.2,320.6L633.7,331.3L641.3,349.0L643.0,359.2L631.7,364.4L617.0,370.6L603.1,356.6L598.2,347.1L589.2,348.0L579.9,358.0L573.9,357.9L561.8,350.7L576.6,329.1L587.0,324.2L591.2,333.0L595.3,328.7L621.5,321.0L623.0,313.3L631.0,311.1Z"}, {"n": "Giresun", "d": "M665.1,84.9L665.2,85.0L665.0,85.0L665.1,84.8L665.1,84.9ZM702.8,74.9L702.0,77.7L700.5,90.5L699.9,96.4L691.8,99.5L686.8,116.2L698.0,122.7L692.3,127.1L689.4,137.0L690.9,142.5L682.6,143.8L666.3,140.6L654.3,125.6L648.5,106.2L648.9,83.2L657.2,83.9L662.7,85.3L669.9,85.8L677.5,83.6L684.8,79.4L690.9,77.3L702.8,74.9Z"}, {"n": "Gümüşhane", "d": "M703.4,96.2L728.0,109.6L734.0,102.0L737.8,100.8L740.5,105.9L744.5,109.6L744.8,104.5L751.7,108.9L748.3,119.3L740.1,123.8L737.0,130.3L736.0,139.0L730.1,146.1L735.0,151.7L726.3,154.7L708.0,151.4L700.3,146.2L691.7,140.6L689.6,129.9L696.8,124.8L693.4,118.4L686.5,108.9L695.7,96.4L702.1,95.2Z"}, {"n": "Hakkari", "d": "M965.6,299.1L964.7,304.7L970.4,303.7L979.8,300.9L985.0,297.2L983.5,304.4L986.5,309.1L985.7,315.4L987.7,319.0L991.4,322.3L996.6,329.2L995.1,337.7L986.4,335.1L971.5,344.3L969.9,349.8L966.0,345.8L963.8,341.0L967.3,337.2L967.8,331.8L960.7,326.5L951.8,328.4L948.0,331.9L927.5,329.6L924.2,312.6L936.6,299.8L947.8,300.7L956.7,299.6L965.6,299.1Z"}, {"n": "Hatay", "d": "M548.5,366.0L548.6,366.1L548.6,366.1L548.5,366.1L548.5,366.0ZM542.1,346.0L556.8,350.6L571.3,358.2L574.0,359.7L571.9,367.3L569.9,376.8L569.4,387.8L571.4,390.7L573.4,392.3L575.1,394.9L570.9,399.9L564.5,398.7L559.5,399.5L558.4,403.1L558.5,414.3L555.3,414.1L554.5,417.3L548.2,421.0L547.6,426.7L539.8,422.4L539.3,418.4L534.6,418.9L533.5,403.8L527.5,392.9L531.3,389.7L533.5,386.6L538.0,382.7L546.6,374.9L550.0,370.3L549.3,365.8L549.5,362.1L545.6,357.4L543.3,353.9L535.6,355.1L536.0,356.6L536.5,350.0L542.1,346.0Z"}, {"n": "Iğdır", "d": "M937.6,134.5L935.5,137.1L938.8,141.7L948.5,145.8L978.5,149.2L984.5,158.7L985.6,159.4L989.5,160.8L990.5,162.6L995.9,172.1L987.4,164.9L979.1,167.4L961.6,167.5L939.9,160.4L929.1,159.0L922.0,160.8L921.0,149.8L919.5,147.1L916.9,140.5L921.3,139.5L921.4,135.9L930.8,134.7L937.6,134.5Z"}, {"n": "Isparta", "d": "M303.2,290.6L297.2,318.3L291.8,319.5L279.6,324.7L274.1,319.1L264.4,302.2L254.1,299.6L247.2,292.1L232.2,300.5L228.1,297.1L232.4,295.8L238.5,290.3L239.6,282.0L247.0,276.0L261.2,264.3L273.4,256.6L286.6,246.6L292.8,252.2L293.4,256.6L311.8,274.8L304.4,279.3L301.7,286.9Z"}, {"n": "İstanbul", "d": "M182.1,92.2L182.1,92.4L181.9,92.2L181.9,92.2L182.1,92.2ZM183.6,89.8L183.8,90.3L183.9,90.5L183.4,90.2L183.6,89.8ZM175.9,89.1L175.9,89.3L175.7,89.4L175.7,89.2L175.9,89.1ZM182.9,88.5L183.4,88.9L182.0,91.0L181.7,89.5L182.9,88.5ZM174.8,88.4L174.8,88.6L174.6,88.6L174.6,88.5L174.8,88.4ZM181.2,87.9L181.6,88.7L180.0,89.0L180.1,88.6L181.2,87.9ZM180.2,87.8L180.3,88.0L180.1,88.1L180.1,87.9L180.2,87.8ZM179.3,87.8L179.7,87.9L179.9,88.3L178.9,88.5L179.3,87.8ZM178.9,85.9L179.2,86.5L178.5,86.8L178.2,86.1L178.9,85.9ZM189.5,64.5L206.6,68.9L207.8,68.0L211.1,69.4L220.8,70.6L221.9,74.0L220.1,75.6L215.0,76.7L209.6,79.6L201.9,77.8L201.1,80.2L198.5,81.9L197.9,85.5L194.2,87.5L192.9,89.6L189.7,89.9L189.0,88.8L183.7,86.8L181.2,83.5L177.8,82.5L178.1,81.6L177.3,81.7L176.5,79.5L176.6,78.5L178.8,77.0L179.6,73.3L181.2,72.3L179.8,70.6L180.7,68.3L184.7,65.2L189.5,64.5ZM134.7,43.7L157.0,56.8L165.0,60.0L174.4,63.3L182.0,64.3L178.1,69.8L179.1,74.7L174.9,78.8L173.5,76.4L172.9,77.2L175.5,79.1L172.9,80.1L168.4,81.9L164.0,81.4L155.2,82.0L153.6,79.1L145.4,77.2L136.4,75.0L127.3,70.1L132.2,64.0L136.4,46.8L134.7,43.7Z"}, {"n": "İzmir", "d": "M66.4,279.1L66.6,279.2L66.5,279.3L66.3,279.3L66.4,279.1ZM73.3,277.7L73.3,277.8L73.2,277.8L73.2,277.7L73.3,277.7ZM65.1,277.6L65.0,277.8L65.0,277.7L65.0,277.6L65.1,277.6ZM62.4,270.5L62.4,270.6L62.3,270.7L62.3,270.5L62.4,270.5ZM62.5,269.9L62.3,270.2L62.2,270.2L62.3,269.9L62.5,269.9ZM43.4,268.1L43.5,268.3L43.5,268.5L43.3,268.4L43.4,268.1ZM43.2,267.4L43.2,267.8L42.9,267.7L42.9,267.6L43.2,267.4ZM60.6,267.3L60.7,267.4L60.7,267.5L60.6,267.5L60.6,267.3ZM44.1,267.3L43.9,267.6L43.6,267.5L43.7,267.3L44.1,267.3ZM31.5,260.8L31.6,261.0L31.6,261.3L31.5,261.1L31.5,260.8ZM55.9,258.4L55.9,258.7L55.7,258.7L55.6,258.5L55.9,258.4ZM44.3,256.1L44.5,256.6L44.2,256.7L43.8,256.3L44.3,256.1ZM61.6,255.5L61.8,255.7L61.3,256.2L61.4,255.6L61.6,255.5ZM44.9,255.2L44.9,255.6L44.6,255.7L44.6,255.6L44.9,255.2ZM44.0,254.6L44.1,254.8L44.0,254.9L43.9,254.7L44.0,254.6ZM44.0,254.3L44.0,254.5L43.9,254.6L43.9,254.4L44.0,254.3ZM61.7,254.0L61.8,254.3L61.4,254.4L61.3,254.3L61.7,254.0ZM45.0,254.1L45.0,254.3L45.0,254.0L45.1,254.0L45.0,254.1ZM44.8,253.8L45.0,254.6L44.8,254.9L44.6,254.3L44.8,253.8ZM46.2,253.6L46.3,253.7L46.1,253.8L46.1,253.7L46.2,253.6ZM60.6,253.3L60.8,253.5L60.6,253.7L60.5,253.3L60.6,253.3ZM62.0,253.0L62.1,253.5L61.8,253.6L61.8,253.3L62.0,253.0ZM61.3,252.8L61.4,252.9L61.4,253.0L61.2,252.9L61.3,252.8ZM36.7,252.4L37.1,252.8L37.0,253.0L36.7,252.8L36.7,252.4ZM40.7,251.6L40.9,252.5L40.0,252.2L40.1,251.9L40.7,251.6ZM39.9,251.5L40.1,251.7L39.8,252.2L39.8,251.5L39.9,251.5ZM71.2,251.3L71.1,251.7L70.9,251.6L71.1,251.2L71.2,251.3ZM68.6,250.8L68.7,250.9L68.8,251.0L68.6,250.9L68.6,250.8ZM60.5,250.3L60.9,251.3L60.3,251.7L60.1,250.5L60.5,250.3ZM39.4,250.2L39.2,252.1L37.9,252.5L37.6,251.2L39.4,250.2ZM64.8,245.0L65.0,245.1L65.0,245.1L64.7,245.0L64.8,245.0ZM65.2,245.0L65.3,245.0L65.4,245.0L65.5,245.1L65.2,245.0L65.3,244.9L65.2,245.0ZM56.9,244.1L58.5,245.3L58.6,247.5L59.6,248.5L59.2,250.1L56.7,248.7L56.9,244.1ZM63.1,244.3L63.5,244.8L63.5,245.2L62.9,244.3L63.1,244.3ZM47.8,237.0L47.9,237.1L48.0,237.3L47.8,237.1L47.8,237.0ZM47.6,236.4L47.6,236.8L47.2,236.8L47.4,236.4L47.6,236.4ZM58.3,235.5L58.5,235.7L58.4,235.9L58.2,235.6L58.3,235.5ZM57.9,235.4L57.9,235.5L57.6,235.7L57.7,235.5L57.9,235.4ZM57.5,233.7L58.3,234.4L58.2,234.8L57.4,234.5L57.5,233.7ZM57.5,232.8L57.5,233.0L57.4,233.2L57.4,233.0L57.5,232.8ZM58.7,231.7L58.8,231.8L58.6,231.8L58.7,231.7L58.7,231.7ZM66.5,223.5L66.7,224.1L66.1,224.1L66.1,223.8L66.5,223.5ZM67.0,222.8L67.0,222.9L66.9,223.1L66.9,223.0L67.0,222.8ZM74.6,221.6L74.5,221.6L74.7,221.5L74.7,221.6L74.6,221.6ZM63.9,220.0L64.2,220.3L64.2,220.5L63.9,220.3L63.9,220.0ZM62.7,218.7L63.5,219.0L63.3,219.8L62.5,219.4L62.7,218.7ZM62.4,218.1L62.5,218.2L62.5,218.3L62.4,218.2L62.4,218.1ZM62.1,213.1L62.0,214.0L61.8,214.1L61.8,213.3L62.1,213.1ZM61.5,213.1L61.6,213.5L61.3,213.9L61.2,213.3L61.5,213.1ZM96.9,202.4L98.7,212.6L92.6,217.1L81.3,221.1L79.0,228.6L87.0,242.5L96.3,243.1L111.0,250.9L116.8,258.4L130.4,253.8L132.7,256.6L146.8,261.0L151.7,271.7L137.3,279.5L122.0,280.3L120.4,281.1L109.9,281.7L95.4,286.3L87.0,288.0L86.8,284.4L83.8,281.2L77.7,279.7L75.0,277.4L67.2,276.6L63.4,270.2L60.9,269.9L61.7,267.4L58.7,266.9L53.1,271.5L52.6,273.3L50.3,271.2L48.2,272.2L47.6,268.2L46.0,268.5L44.5,267.9L42.5,265.9L43.1,267.4L40.9,265.8L41.0,263.3L40.8,264.2L38.1,265.6L32.7,262.9L34.8,261.3L36.4,259.3L35.5,255.6L37.1,255.6L38.6,258.4L40.3,260.1L41.5,259.1L45.4,253.9L46.1,253.9L43.4,248.9L42.1,247.7L40.2,244.5L40.5,244.4L39.0,238.0L42.3,235.2L47.8,237.3L49.9,240.4L53.1,245.2L51.2,249.3L51.0,252.2L54.1,255.6L55.6,259.9L55.7,257.5L56.2,257.3L55.7,254.8L58.9,252.1L62.6,257.0L77.0,254.1L80.2,250.8L80.8,249.5L76.6,249.5L71.2,250.3L70.0,251.1L68.5,249.5L64.0,245.8L66.7,246.6L64.7,244.4L64.4,243.9L64.6,243.3L63.8,242.1L60.0,239.6L58.2,237.2L58.6,235.6L58.4,232.5L59.1,231.1L63.4,229.8L65.2,230.4L67.7,229.5L69.4,229.5L68.1,226.1L69.6,226.4L71.7,225.7L71.0,224.2L73.6,223.1L76.0,222.1L74.5,221.0L74.8,217.8L73.5,219.7L70.3,218.1L69.3,218.1L68.4,217.9L64.8,218.3L62.0,214.1L62.1,212.9L66.7,208.8L60.3,202.3L81.7,185.7L96.3,194.1Z"}, {"n": "Kahramanmaraş", "d": "M592.7,241.0L605.6,240.9L600.8,247.8L609.4,249.6L626.9,256.8L630.7,265.9L617.9,295.9L612.8,307.1L623.0,313.3L619.5,322.0L595.3,328.7L591.2,333.0L587.1,324.5L576.6,329.1L569.1,320.5L558.5,324.2L549.9,313.0L557.5,297.8L555.4,291.9L556.2,280.9L569.2,254.3L575.9,241.6L592.7,241.0Z"}, {"n": "Karabük", "d": "M382.0,45.4L385.7,52.4L384.0,55.4L380.9,57.9L379.2,61.2L379.1,65.9L379.7,67.2L384.0,69.9L387.4,74.3L384.9,79.1L367.5,83.0L358.5,91.0L356.7,88.6L346.2,84.1L346.4,79.7L336.4,79.0L337.3,71.8L338.6,69.7L342.1,67.0L347.2,64.3L353.8,63.2L363.2,57.5L365.6,54.9L367.8,49.2L370.8,47.5L372.7,45.0L374.3,45.9L379.6,43.2L382.0,45.4Z"}, {"n": "Karaman", "d": "M426.4,322.1L431.8,329.4L445.5,335.6L434.7,339.1L422.3,345.7L410.9,347.4L389.4,357.4L385.5,369.2L394.7,375.4L394.5,379.5L372.8,385.6L360.3,380.4L355.3,369.4L363.1,362.0L373.6,353.5L360.9,348.3L365.2,341.3L367.4,333.4L375.2,333.4L376.3,328.8L386.4,321.6L391.1,317.1L398.8,322.3L403.5,321.0L408.6,311.3L421.0,306.9Z"}, {"n": "Kars", "d": "M932.6,81.2L936.6,90.6L940.3,97.9L940.4,101.6L934.8,109.7L934.3,111.1L929.8,115.2L932.3,124.5L936.9,129.8L931.3,134.6L921.4,135.9L921.3,139.5L916.7,142.3L919.7,149.5L886.6,152.5L879.1,150.6L868.8,138.3L856.9,130.0L863.8,125.9L877.6,117.4L878.1,104.2L886.2,101.5L894.8,95.6L896.8,85.5L907.4,81.2L915.1,74.6L916.1,68.0L924.2,68.2L924.9,74.0L932.6,81.2Z"}, {"n": "Kastamonu", "d": "M401.0,12.0L437.7,14.6L446.9,21.8L449.2,30.8L466.3,35.5L464.6,40.6L459.9,59.9L455.7,61.7L446.1,77.5L449.7,81.8L437.1,90.2L426.1,85.6L424.4,80.5L427.9,75.0L406.7,82.7L394.6,76.0L387.4,74.3L379.7,67.2L380.9,57.9L385.7,52.4L374.5,40.4L366.9,24.4L384.8,18.2L401.0,12.0Z"}, {"n": "Kayseri", "d": "M536.2,200.5L542.4,205.2L558.2,203.6L570.1,202.1L584.9,205.1L578.2,235.6L575.1,242.5L565.2,259.1L563.4,258.2L554.7,249.7L539.3,268.6L519.2,283.7L500.8,283.5L503.2,269.4L499.3,263.7L490.3,261.9L483.0,251.8L482.3,247.0L488.0,242.9L490.6,230.7L487.2,213.0L491.2,211.4L512.1,207.2L511.5,201.4L529.2,193.9L536.2,200.5Z"}, {"n": "Kilis", "d": "M613.2,362.2L617.0,370.6L615.8,371.6L598.2,370.1L597.0,370.3L595.4,372.7L592.1,370.3L593.6,366.0L587.8,362.2L580.5,361.0L579.4,359.3L580.6,357.4L586.0,354.1L589.2,348.0L591.4,346.9L597.1,346.9L600.2,348.5L603.1,356.6L613.2,362.2Z"}, {"n": "Kırıkkale", "d": "M431.0,129.6L439.3,132.0L440.7,138.3L445.5,144.6L438.3,150.5L438.8,159.9L430.6,166.7L427.8,176.2L424.9,179.5L422.8,184.2L418.6,184.2L413.7,188.4L410.8,196.9L405.0,203.1L402.4,198.8L403.6,195.3L402.6,192.7L398.3,191.8L395.5,188.7L398.2,183.0L401.0,166.0L402.2,163.2L405.6,159.7L414.7,154.3L415.5,149.8L413.3,143.8L415.7,136.7L420.1,129.8L423.3,128.0L431.0,129.6Z"}, {"n": "Kırklareli", "d": "M85.7,6.3L90.1,9.2L94.1,14.0L101.1,20.1L101.4,19.1L107.2,16.5L110.3,15.2L115.4,17.0L116.7,13.6L126.0,14.2L124.9,20.5L122.8,22.6L126.5,29.9L129.8,35.5L129.1,37.5L123.2,43.9L112.5,46.2L107.5,49.6L105.9,56.9L99.5,65.4L92.1,59.5L68.1,57.9L66.5,53.1L72.4,38.6L67.9,34.8L71.0,25.9L71.1,14.9L73.6,10.0L76.2,7.2L83.3,7.8Z"}, {"n": "Kırşehir", "d": "M447.0,164.3L457.3,164.9L463.5,172.3L469.3,181.4L466.8,192.0L472.9,189.8L470.8,195.8L467.6,202.3L464.6,208.6L462.2,214.5L459.7,221.5L452.8,221.5L450.9,226.2L446.7,226.2L439.3,220.3L431.4,213.3L414.4,202.4L413.7,188.4L422.8,184.2L427.8,176.2L433.3,163.9L447.0,164.3Z"}, {"n": "Kocaeli", "d": "M242.1,66.0L247.5,69.3L244.6,73.5L246.8,83.5L247.0,90.2L243.5,96.5L235.9,105.5L222.9,108.3L206.0,109.8L198.5,109.6L202.8,97.5L202.5,99.1L218.2,98.2L224.7,98.9L216.7,97.5L208.0,94.7L201.5,94.9L193.4,92.5L189.3,92.6L190.2,91.4L190.6,91.1L194.2,87.5L198.5,81.9L201.9,77.8L215.0,76.7L221.9,73.3L235.9,71.0L237.9,69.4L239.6,67.8L242.1,66.0ZM241.7,65.7L241.4,65.9L241.2,65.8L241.3,65.7L241.7,65.7Z"}, {"n": "Konya", "d": "M395.4,199.0L402.2,227.8L402.3,244.8L395.9,264.2L402.2,280.5L409.1,285.2L439.1,279.9L452.2,290.3L458.7,304.3L454.9,316.0L457.0,317.7L461.9,325.3L452.5,331.4L445.5,335.6L431.7,329.2L426.4,322.1L416.9,307.2L404.5,317.2L402.1,322.3L393.9,317.3L386.4,321.6L378.1,324.0L378.2,333.3L371.4,331.9L366.8,338.0L361.0,346.4L363.9,351.2L370.4,357.5L356.0,364.2L346.7,357.5L323.7,328.3L303.6,324.7L296.5,319.2L298.7,310.8L303.2,290.6L301.8,283.0L310.8,276.4L310.2,271.0L292.4,253.2L315.0,238.4L310.3,232.2L316.5,217.0L319.1,208.8L324.4,202.7L330.2,206.9L346.9,209.3L360.4,210.6L370.1,208.4L377.9,203.6L384.5,203.2L389.4,199.1L395.4,199.0Z"}, {"n": "Kütahya", "d": "M205.3,154.3L212.1,155.1L213.6,164.4L234.2,166.8L235.1,172.2L244.4,189.3L251.5,200.1L247.9,205.4L236.8,220.4L223.7,232.8L222.3,227.9L211.8,221.2L202.3,224.9L188.3,231.7L178.1,232.1L176.7,222.4L174.0,213.3L160.4,205.8L158.6,198.3L170.1,189.4L172.8,177.1L177.3,176.6L188.1,176.6L190.0,167.6L197.2,153.3L205.3,154.3Z"}, {"n": "Malatya", "d": "M664.6,206.1L674.5,208.6L677.8,213.6L672.9,215.3L675.1,230.6L666.4,232.0L662.1,246.5L669.7,249.8L685.5,253.9L700.5,258.1L700.7,267.5L694.6,272.9L676.4,274.6L674.8,269.4L670.8,265.4L649.5,274.7L641.1,290.1L630.5,289.7L625.1,291.7L626.8,278.2L630.8,260.0L614.6,250.6L601.2,250.1L604.9,243.7L615.9,233.5L621.6,224.8L619.3,216.6L631.1,213.8L651.5,209.1L664.6,206.1Z"}, {"n": "Manisa", "d": "M107.7,190.7L118.2,190.8L120.1,191.9L119.0,198.1L124.9,199.8L130.2,209.7L148.5,205.6L158.7,202.9L168.7,208.1L175.5,216.4L178.1,232.1L168.3,242.2L168.7,254.3L172.1,263.0L165.3,271.2L159.7,273.1L151.7,271.7L146.8,261.0L132.7,256.6L130.4,253.8L116.8,258.4L111.0,250.9L96.3,243.1L87.0,242.5L79.0,228.6L91.7,218.8L95.0,216.1L98.7,206.0L96.3,194.1L99.3,186.2L107.7,190.7Z"}, {"n": "Mardin", "d": "M787.7,299.6L800.7,299.9L807.7,310.3L827.6,309.0L843.2,298.1L846.3,308.4L844.7,314.3L836.3,316.3L836.2,325.0L838.3,328.3L842.9,329.1L843.0,338.3L812.0,342.3L806.7,341.4L792.0,339.3L786.6,339.5L768.8,347.0L755.5,351.1L752.1,338.8L740.0,310.4L751.0,308.2L760.6,309.5L772.9,304.1L774.2,298.5L779.7,296.3L785.1,298.7Z"}, {"n": "Mersin", "d": "M410.9,405.8L411.1,406.3L410.8,406.4L411.0,406.1L410.9,405.8ZM419.4,403.6L419.6,403.7L419.6,403.8L419.3,403.7L419.4,403.6ZM423.8,401.0L423.7,402.1L422.6,402.2L422.9,401.7L423.8,401.0ZM426.3,396.4L426.4,396.6L426.2,396.7L426.2,396.5L426.3,396.4ZM482.6,338.9L487.1,344.8L490.7,358.7L484.4,364.0L479.5,362.3L469.1,360.4L463.5,364.7L457.5,370.0L444.0,383.2L441.0,386.0L439.0,393.2L435.1,394.1L435.1,395.3L433.3,398.9L428.5,393.3L427.0,396.0L425.3,398.4L419.0,403.8L419.1,405.4L418.8,403.9L417.7,401.9L414.1,402.6L408.0,403.8L401.7,404.1L391.0,405.2L387.6,409.8L380.8,407.5L373.2,413.4L360.9,407.7L364.4,399.3L364.6,388.8L375.2,385.5L394.5,379.5L394.7,375.4L385.5,369.2L389.4,357.4L403.9,347.5L415.6,344.5L421.8,345.8L434.4,339.2L451.8,332.7L460.7,326.8L461.7,324.2L471.9,321.1L482.6,338.9Z"}, {"n": "Muğla", "d": "M179.3,378.2L179.4,378.3L179.3,378.4L179.2,378.3L179.3,378.2ZM179.9,377.3L180.1,377.4L179.5,377.4L179.6,377.3L179.9,377.3ZM126.2,377.0L126.2,377.3L126.2,377.3L126.1,377.2L126.2,377.0ZM126.5,376.7L126.3,376.9L126.2,376.9L126.2,376.8L126.5,376.7ZM130.9,374.3L131.0,374.6L130.7,374.5L130.7,374.3L130.9,374.3ZM127.3,373.0L127.3,373.2L127.1,373.4L127.2,373.0L127.3,373.0ZM127.1,372.5L127.1,372.6L127.1,372.8L127.0,372.7L127.1,372.5ZM163.9,372.4L164.0,372.5L163.8,372.6L163.8,372.5L163.9,372.4ZM127.2,370.9L127.5,371.0L127.5,371.1L126.9,371.1L127.2,370.9ZM181.7,370.7L181.3,371.2L181.2,371.2L181.3,370.8L181.7,370.7ZM99.0,370.1L99.1,370.2L98.9,370.7L98.8,370.3L99.0,370.1ZM178.6,370.0L179.0,370.3L178.4,370.8L178.3,370.2L178.6,370.0ZM125.1,369.6L125.1,369.8L125.0,369.9L124.9,369.6L125.1,369.6ZM170.8,369.6L171.4,370.0L171.4,370.9L170.4,369.9L170.8,369.6ZM126.2,369.5L126.7,370.5L126.5,371.0L125.8,370.3L126.2,369.5ZM177.7,369.5L178.0,369.7L178.1,369.8L177.7,369.7L177.7,369.5ZM126.5,369.4L126.5,369.7L126.4,369.7L126.4,369.5L126.5,369.4ZM171.9,368.8L173.0,369.4L171.8,370.7L171.5,369.5L171.9,368.8ZM126.6,368.8L126.6,368.8L126.7,368.7L126.7,368.8L126.6,368.8ZM160.5,368.0L160.5,368.1L160.1,368.1L160.2,368.0L160.5,368.0ZM172.7,367.8L172.7,368.0L172.6,368.0L172.6,367.9L172.7,367.8ZM176.5,367.7L176.9,367.9L176.8,368.1L176.5,368.0L176.5,367.7ZM172.4,367.6L172.6,367.8L172.3,368.1L172.2,367.7L172.4,367.6ZM123.7,367.3L123.9,367.4L123.8,367.6L123.7,367.5L123.7,367.3ZM172.8,367.0L172.8,367.4L172.6,367.7L172.7,367.1L172.8,367.0ZM124.2,366.9L124.3,367.0L124.1,367.1L124.1,367.0L124.2,366.9ZM172.7,366.8L172.7,367.1L172.6,367.1L172.5,367.0L172.7,366.8ZM137.2,366.6L137.2,366.8L136.9,366.7L137.0,366.6L137.2,366.6ZM124.4,366.3L124.6,366.4L124.6,366.7L124.3,366.4L124.4,366.3ZM126.1,365.8L126.0,366.4L125.1,366.8L125.1,366.1L126.1,365.8ZM127.1,365.2L127.4,365.4L127.7,365.3L127.8,365.4L127.5,365.8L126.7,365.9L127.1,365.2ZM173.0,365.1L173.6,365.9L173.0,366.4L172.7,366.0L173.0,365.1ZM93.5,364.7L94.0,365.0L94.0,365.1L93.5,364.9L93.5,364.7ZM122.4,364.1L122.6,364.1L122.6,364.3L122.4,364.2L122.4,364.1ZM113.6,364.1L113.6,364.1L113.5,364.2L113.5,364.1L113.6,364.1ZM112.2,364.0L112.0,364.2L111.9,364.2L111.9,364.1L112.2,364.0ZM112.7,363.8L112.7,364.0L112.6,364.1L112.6,363.9L112.7,363.8ZM114.4,363.6L114.4,363.7L114.2,363.8L114.3,363.6L114.4,363.6ZM127.4,363.5L127.4,363.7L127.3,363.6L127.3,363.5L127.4,363.5ZM126.1,363.4L126.3,363.5L126.3,363.6L126.1,363.6L126.1,363.4ZM130.8,363.4L130.9,363.5L130.9,363.6L130.8,363.5L130.8,363.4ZM96.8,362.9L96.9,363.0L96.9,363.1L96.8,363.0L96.8,362.9ZM96.4,362.6L96.6,362.8L96.6,362.9L96.3,362.7L96.4,362.6ZM147.2,362.5L147.3,362.8L146.7,362.9L147.0,362.4L147.2,362.5ZM155.4,361.1L155.3,361.2L155.2,361.2L155.3,361.1L155.4,361.1ZM137.8,360.3L137.8,361.1L137.0,360.4L137.5,360.4L137.8,360.3ZM139.3,359.5L139.3,359.7L138.8,359.6L138.8,359.5L139.3,359.5ZM147.4,356.6L147.5,356.7L147.5,356.8L147.4,356.7L147.4,356.6ZM125.7,356.3L125.8,356.5L125.3,356.4L125.3,356.4L125.7,356.3ZM126.3,356.2L126.3,356.2L126.0,356.4L126.1,356.2L126.3,356.2ZM126.5,355.8L126.7,355.8L126.7,355.9L126.5,356.0L126.5,355.8ZM126.1,355.2L126.2,355.3L126.1,355.4L126.1,355.2L126.1,355.2ZM132.4,351.7L132.5,351.9L132.4,352.0L132.3,351.9L132.4,351.7ZM132.4,351.2L132.5,351.2L132.4,351.3L132.3,351.3L132.4,351.2ZM88.4,350.7L88.4,350.8L88.3,350.9L88.3,350.8L88.4,350.7ZM134.6,350.0L134.7,350.3L134.2,350.4L134.4,350.1L134.6,350.0ZM102.6,349.1L102.5,349.0L102.7,349.0L102.6,349.1L102.6,349.1ZM106.5,348.9L106.6,349.0L106.6,349.1L106.5,349.0L106.5,348.9ZM103.1,348.9L103.6,349.2L103.7,349.8L103.2,349.7L103.1,348.9ZM84.5,348.4L84.6,348.5L84.6,348.8L84.4,348.7L84.5,348.4ZM82.8,348.0L82.9,348.0L82.9,348.1L82.7,348.1L82.8,348.0ZM135.0,347.9L135.2,348.2L134.7,348.2L134.8,348.0L135.0,347.9ZM94.7,347.7L97.6,349.1L98.1,349.7L97.2,350.4L95.6,349.6L94.7,347.7ZM135.2,347.6L135.2,347.8L135.0,347.7L135.0,347.6L135.2,347.6ZM92.5,347.4L92.6,347.7L92.4,348.2L92.2,347.9L92.5,347.4ZM136.9,347.3L136.9,347.5L136.7,347.4L136.7,347.4L136.9,347.3ZM81.9,347.1L82.0,347.2L82.0,347.2L81.9,347.3L81.9,347.1ZM91.2,346.9L91.3,347.1L91.2,347.2L91.0,346.9L91.2,346.9ZM83.9,346.7L84.2,347.0L83.2,347.8L83.1,347.6L83.9,346.7ZM83.1,344.2L83.1,344.5L82.8,344.3L82.9,344.2L83.1,344.2ZM83.6,341.6L83.6,341.9L83.1,342.1L83.3,341.6L83.6,341.6ZM84.8,341.5L85.0,341.6L85.0,341.7L84.6,341.6L84.8,341.5ZM97.1,339.3L97.0,339.6L96.9,339.7L96.8,339.6L97.1,339.3ZM97.5,338.8L97.4,339.2L97.3,339.2L97.3,338.9L97.5,338.8ZM85.8,338.6L85.9,338.7L85.9,338.8L85.8,338.8L85.8,338.6ZM93.0,338.2L92.7,338.5L92.5,338.4L92.5,338.2L93.0,338.2ZM100.1,336.5L99.9,338.1L97.9,338.1L98.2,337.1L100.1,336.5ZM91.3,335.9L92.1,336.4L92.2,336.7L91.6,336.7L91.3,335.9ZM91.0,335.7L91.2,335.8L91.2,335.9L90.9,336.0L91.0,335.7ZM99.5,334.4L99.6,334.4L99.6,334.5L99.4,334.4L99.5,334.4ZM101.0,334.0L101.1,334.1L101.2,334.3L101.1,334.3L101.0,334.0ZM101.0,330.6L101.7,331.0L101.7,331.2L101.0,330.8L101.0,330.6ZM101.5,330.5L101.6,330.6L101.6,330.6L101.5,330.6L101.5,330.5ZM91.7,328.7L91.5,328.9L91.4,328.8L91.5,328.5L91.7,328.7ZM149.1,314.5L156.3,321.5L165.1,331.2L177.9,337.9L179.1,342.6L180.4,348.1L190.0,355.3L193.7,344.8L197.3,345.9L199.3,349.9L204.5,345.7L211.2,352.1L207.5,362.3L192.9,385.1L191.4,393.5L187.9,392.4L183.3,390.4L181.4,388.5L183.0,386.6L183.1,385.8L181.4,382.7L182.7,378.2L181.2,378.0L178.7,377.1L176.6,378.1L177.3,375.2L180.1,373.3L181.4,371.6L182.2,372.5L181.5,369.5L177.9,367.1L177.2,366.6L174.7,365.5L172.5,363.9L170.7,366.8L169.1,367.8L168.4,370.1L168.4,371.4L170.0,371.0L169.4,372.8L168.2,375.1L168.5,371.8L166.7,370.3L166.1,369.7L162.1,366.8L159.3,367.2L157.1,367.6L156.7,365.8L157.1,363.9L157.0,362.2L152.8,358.9L151.8,360.5L149.7,361.0L148.3,360.2L148.7,356.8L146.8,357.1L145.2,356.5L144.5,358.6L145.0,362.0L140.0,360.7L139.2,361.6L140.6,359.7L138.7,357.4L136.4,360.6L137.3,362.8L138.3,364.5L140.1,365.6L137.9,365.4L136.0,368.4L129.9,374.8L127.8,374.6L124.9,375.9L123.3,377.4L123.3,375.2L127.6,374.0L128.1,370.3L127.8,371.5L127.9,370.6L128.1,369.3L126.5,368.1L125.6,369.8L124.4,367.3L127.5,366.1L128.8,366.4L130.2,365.7L128.7,364.7L131.0,364.0L130.6,360.7L128.4,362.6L126.7,361.9L122.1,363.5L120.2,364.0L119.1,364.8L118.0,363.7L114.8,363.4L108.1,365.9L107.6,367.6L102.3,368.6L99.2,369.1L96.8,370.2L93.4,368.9L91.9,368.3L93.2,367.6L94.7,364.4L96.6,363.4L104.1,363.3L108.6,361.9L115.4,360.0L127.5,360.9L127.3,358.7L125.9,358.5L124.4,357.4L126.4,355.3L125.1,353.9L125.4,352.5L131.6,351.9L132.6,352.5L133.1,353.8L132.5,351.2L134.8,349.6L134.6,348.7L135.5,347.6L137.1,347.4L141.5,345.4L132.8,345.7L130.3,346.5L128.9,345.6L121.6,346.5L116.3,346.3L113.3,347.2L108.0,347.3L105.5,349.1L101.8,349.3L97.6,348.5L93.9,346.4L92.0,347.6L89.7,346.6L88.1,349.4L86.2,350.0L84.2,343.7L87.7,340.1L85.8,338.8L86.7,338.2L89.3,336.9L90.4,338.8L92.8,337.9L92.6,339.5L96.9,342.2L102.7,338.4L101.4,338.6L101.6,337.2L100.9,335.2L101.3,334.7L103.3,334.6L103.6,334.4L104.4,335.0L104.3,328.9L100.6,330.6L100.3,330.8L99.0,332.3L99.6,330.8L96.1,330.5L97.3,324.6L95.5,327.4L92.5,325.6L94.0,321.9L94.1,319.3L97.9,309.7L108.7,314.3L132.1,315.8L139.6,308.3Z"}, {"n": "Muş", "d": "M887.4,202.9L885.2,218.8L875.1,218.8L857.0,222.6L851.0,225.7L849.8,228.2L852.7,234.3L842.7,241.3L827.5,241.6L818.9,245.6L818.4,240.3L812.4,233.6L806.3,219.2L812.1,206.5L808.5,203.0L808.1,191.0L817.9,188.2L825.6,192.4L834.9,202.2L853.6,199.0L861.2,190.8L861.5,185.8L873.8,181.4L882.3,195.7L887.4,202.9Z"}, {"n": "Nevşehir", "d": "M479.6,189.5L481.7,198.7L487.2,207.4L487.1,213.2L490.6,230.7L488.0,242.9L482.2,247.9L480.6,256.4L470.0,253.4L459.0,254.0L449.5,239.6L445.9,234.6L450.9,226.2L452.8,221.5L459.7,221.5L462.2,214.5L464.6,208.6L467.6,202.3L470.8,195.8L472.9,189.8L466.8,192.0L469.3,181.4L476.4,187.8Z"}, {"n": "Niğde", "d": "M462.6,255.6L475.9,257.1L482.1,255.5L486.1,252.0L493.4,263.4L501.5,265.9L503.2,278.6L499.0,284.2L498.4,291.3L489.3,300.6L478.5,301.3L479.7,308.9L476.1,316.5L471.3,321.2L461.7,324.2L456.7,317.5L455.0,313.7L458.7,301.1L441.7,279.8L444.9,276.0L452.3,271.7L455.7,264.5L454.3,256.2L462.6,255.6Z"}, {"n": "Ordu", "d": "M599.6,70.3L605.9,70.5L605.9,71.9L610.8,73.0L618.5,78.8L622.2,77.0L626.0,71.1L627.2,72.6L631.4,72.4L630.9,76.1L632.5,78.5L635.5,79.2L636.2,81.1L648.8,83.1L642.9,97.0L648.5,106.2L650.6,113.0L643.8,119.4L637.4,120.6L633.7,124.0L629.6,125.0L627.3,123.5L622.0,109.9L614.8,109.4L608.7,105.1L606.9,105.1L605.9,102.4L600.4,100.0L594.7,101.0L589.4,100.1L587.1,97.6L583.0,96.9L574.5,92.5L575.0,90.5L581.4,88.3L585.7,85.3L590.5,77.1L598.6,72.5L598.5,70.3L599.6,70.3Z"}, {"n": "Osmaniye", "d": "M555.8,324.3L564.2,322.9L569.1,320.5L572.6,325.5L576.6,329.1L566.5,340.4L561.8,350.7L556.8,350.6L552.1,347.0L541.0,345.9L541.9,339.3L538.9,335.9L532.4,339.4L531.2,339.0L533.9,333.6L532.7,331.4L532.9,323.5L540.1,310.0L546.7,305.1L554.5,304.0L549.9,314.1L551.6,322.8L555.8,324.3Z"}, {"n": "Rize", "d": "M809.3,60.5L810.8,63.1L811.2,66.3L813.8,69.8L817.0,72.2L819.1,72.4L819.9,74.0L819.2,75.6L815.7,77.7L804.3,93.0L800.4,96.1L789.0,103.4L771.2,111.3L770.9,105.0L772.6,100.9L772.6,97.5L770.3,88.8L767.9,84.1L763.5,80.5L766.2,78.4L771.9,77.5L774.5,78.3L783.5,74.3L787.7,69.3L797.8,67.2L801.4,65.5L805.9,61.3L809.3,60.5Z"}, {"n": "Sakarya", "d": "M247.1,68.2L261.8,71.6L267.1,74.4L278.5,75.4L281.7,79.1L280.2,82.8L275.0,87.1L273.2,91.2L274.2,95.0L279.1,99.0L277.2,102.3L276.9,109.2L275.2,111.0L271.6,112.2L263.0,112.4L258.7,117.6L261.5,121.3L260.3,124.6L247.6,120.1L234.3,122.3L226.7,115.5L224.3,109.7L224.1,108.4L229.4,108.3L240.5,104.5L243.5,96.5L243.0,92.2L247.5,89.3L246.8,83.5L242.9,78.8L244.6,73.5L247.4,71.0L247.1,68.2ZM247.1,68.2L247.1,68.2L247.1,68.2L247.1,68.2Z"}, {"n": "Samsun", "d": "M592.4,66.9L592.3,66.9L592.3,66.9L592.4,66.9L592.4,66.9ZM592.1,66.8L592.2,66.8L592.3,66.9L592.2,66.9L592.1,66.8ZM572.8,54.9L573.1,54.8L573.1,55.1L573.0,55.1L572.8,54.9ZM572.8,54.9L573.1,55.8L573.1,54.7L590.5,61.2L591.6,65.9L598.5,70.3L590.7,76.9L581.4,88.3L575.1,88.2L562.4,89.1L558.2,83.4L549.4,81.5L547.3,87.5L536.5,88.5L523.1,88.3L511.9,79.2L486.4,75.0L484.0,66.7L483.8,59.6L499.0,62.6L506.8,62.6L510.5,56.3L512.2,41.0L516.3,38.0L536.5,31.1L544.8,38.4L551.4,56.6L556.5,59.4L558.6,62.0L561.7,63.9L568.3,61.0L572.8,54.9Z"}, {"n": "Şanlıurfa", "d": "M708.1,280.8L717.1,281.8L728.6,291.4L733.8,291.9L738.6,296.9L738.9,307.2L740.1,312.2L752.1,338.8L753.1,346.3L755.5,351.1L759.3,353.2L737.9,363.9L706.1,370.0L695.3,367.4L680.4,367.1L671.7,358.3L663.1,354.4L652.6,353.8L643.0,359.2L643.0,351.8L636.3,343.7L633.9,334.8L633.7,331.3L634.6,326.7L639.2,320.6L642.6,318.1L651.2,320.3L659.6,315.2L667.3,314.9L674.4,308.9L685.2,304.8L686.0,303.5L685.5,301.2L692.1,297.1L693.2,294.4L693.1,288.1L697.4,281.9L703.6,278.7L708.1,280.8Z"}, {"n": "Siirt", "d": "M870.3,271.9L875.5,273.4L887.4,279.9L893.0,276.3L899.2,277.3L900.7,278.7L903.6,284.9L901.0,290.4L900.8,293.5L889.4,291.8L885.0,288.9L881.0,288.8L875.3,291.7L871.0,297.6L866.7,301.0L858.0,302.0L848.1,301.1L844.0,298.9L842.3,296.6L837.0,297.9L834.2,295.6L836.2,292.4L835.8,290.4L824.8,290.2L821.3,288.5L819.2,286.2L820.3,283.6L822.8,281.6L822.9,279.3L829.4,278.2L831.4,273.9L832.9,267.7L845.4,270.8L848.7,270.3L851.1,272.1L854.7,267.3L860.5,266.2L863.7,267.3L870.3,271.9Z"}, {"n": "Sinop", "d": "M484.2,6.8L489.7,9.4L491.1,11.6L497.7,12.5L492.0,15.7L493.8,22.8L497.1,27.3L500.8,30.9L508.5,34.5L512.2,41.0L510.5,56.0L504.2,63.6L492.9,55.1L479.0,67.1L459.9,59.9L464.6,40.6L466.3,35.5L449.2,30.8L446.9,21.8L451.3,17.3L461.6,16.2L476.6,16.4L484.4,8.4Z"}, {"n": "Şırnak", "d": "M889.8,291.9L904.4,296.5L918.0,298.9L924.2,312.6L927.5,329.6L918.4,327.3L903.5,323.8L893.8,324.4L891.1,322.3L888.3,326.3L886.0,328.5L880.4,337.7L868.6,340.3L868.3,332.4L861.2,329.0L852.7,334.9L843.9,333.6L838.3,328.3L836.2,325.0L844.7,314.3L846.3,308.4L844.0,298.9L865.9,301.2L875.3,291.7L885.0,288.9Z"}, {"n": "Sivas", "d": "M653.9,124.5L658.8,136.5L672.1,139.3L681.5,148.9L665.7,149.1L661.4,156.5L669.5,157.2L669.6,160.6L665.3,163.3L661.4,168.6L663.0,186.4L660.9,204.5L651.9,209.0L631.1,213.8L619.3,216.6L621.6,224.8L607.6,240.0L590.4,239.6L576.8,241.2L587.8,210.1L584.4,204.7L570.7,202.1L558.2,203.6L541.9,205.1L532.9,195.4L530.5,191.3L542.3,180.3L547.0,168.6L545.3,164.0L541.3,156.9L538.1,150.7L550.6,148.5L561.8,150.4L574.1,144.6L575.2,137.6L589.0,134.9L599.4,134.3L615.1,131.1L619.4,125.8L621.1,119.7L627.5,123.8L633.7,124.0L643.8,119.4L651.9,115.9Z"}, {"n": "Tekirdağ", "d": "M132.1,41.4L134.7,43.6L136.4,46.8L128.9,66.1L130.7,76.2L123.6,79.3L122.1,81.8L118.0,82.5L112.1,79.3L96.5,87.2L90.4,95.8L81.8,105.1L74.0,100.3L73.6,93.9L65.6,97.1L61.3,97.2L58.6,86.7L59.3,77.9L60.8,73.5L69.3,67.5L67.2,60.6L70.1,58.5L86.1,57.0L97.0,65.1L101.2,64.4L107.4,52.8L110.4,47.2L117.4,46.7L132.1,41.4Z"}, {"n": "Tokat", "d": "M575.1,88.2L575.0,93.0L587.1,97.6L594.7,101.0L605.9,102.4L608.7,105.1L622.4,110.2L621.1,119.7L619.4,125.8L615.1,131.1L599.4,134.3L589.0,134.9L575.2,137.6L573.3,145.9L554.7,149.9L545.0,150.7L537.0,147.9L535.6,141.7L513.6,134.4L516.9,128.7L530.8,113.5L540.9,116.3L555.7,112.0L563.3,98.8L562.1,88.9L570.9,86.9Z"}, {"n": "Trabzon", "d": "M716.0,73.0L723.6,78.5L731.6,79.4L739.6,83.3L752.3,86.1L763.4,80.5L767.8,83.8L772.6,97.5L770.9,105.0L757.8,113.6L751.7,108.9L746.4,103.0L744.8,105.4L745.1,109.3L740.5,105.9L737.8,100.8L734.0,102.0L729.3,109.7L701.5,94.3L700.5,82.9L709.0,76.9Z"}, {"n": "Tunceli", "d": "M760.2,177.4L772.9,180.2L766.4,188.3L756.6,194.6L747.8,200.2L747.7,206.2L742.1,208.0L740.6,214.4L737.8,222.9L727.0,227.1L696.8,221.0L686.2,222.5L683.0,214.3L682.6,201.7L690.5,197.2L683.6,195.2L692.5,188.8L711.1,180.5L725.2,181.3L728.8,184.4L734.2,179.3L740.2,177.1L752.8,176.7Z"}, {"n": "Uşak", "d": "M222.4,228.7L222.5,233.3L221.4,237.7L216.2,246.9L215.3,250.4L211.1,252.7L209.7,257.7L206.9,262.5L206.0,267.9L204.4,267.7L198.2,263.2L187.6,267.7L181.2,266.2L172.1,263.0L167.1,257.0L168.7,254.7L167.9,245.5L168.3,241.9L169.9,238.1L177.3,232.2L180.9,231.3L188.3,231.7L192.0,228.4L210.8,221.2L220.9,223.6L222.4,228.7Z"}, {"n": "Van", "d": "M919.3,187.3L926.9,191.8L935.0,193.7L951.4,190.1L958.0,191.9L959.2,194.7L959.3,197.9L964.7,204.6L963.1,206.1L963.8,209.3L962.8,214.3L966.6,223.6L969.7,225.0L967.7,232.9L968.2,237.5L970.3,244.0L969.8,251.2L973.4,256.4L979.3,257.1L975.5,262.1L975.0,266.7L972.2,272.2L971.6,274.1L969.6,278.7L967.1,284.8L967.7,289.7L974.9,290.5L976.3,294.2L977.4,296.2L978.2,302.4L970.4,303.7L964.7,304.6L965.1,297.1L956.7,299.6L947.8,300.7L936.6,299.8L909.7,296.7L900.8,293.5L903.6,284.9L899.2,277.3L890.0,272.2L888.9,269.0L888.0,262.2L885.5,252.1L895.8,245.6L899.7,239.4L910.6,227.7L911.8,221.9L901.7,214.5L909.1,204.8L910.1,197.9L905.7,193.3L911.5,192.0L919.3,187.3Z"}, {"n": "Yalova", "d": "M196.6,100.1L199.1,100.8L198.5,109.6L195.0,108.3L190.0,109.9L178.5,109.7L176.7,113.8L177.8,115.1L174.9,116.6L170.1,115.0L168.6,113.2L164.8,112.4L165.5,110.1L172.6,106.9L175.7,104.0L190.8,102.9L196.6,100.1Z"}, {"n": "Yozgat", "d": "M504.8,132.6L513.6,134.4L535.6,141.7L537.0,147.9L537.1,153.7L542.5,161.5L545.2,167.6L542.4,178.0L537.7,185.6L528.6,194.7L521.8,200.4L511.5,201.4L512.1,207.2L489.0,211.3L486.8,204.5L482.9,191.3L476.2,185.1L463.0,177.3L463.5,172.3L457.3,164.9L447.4,164.6L438.0,153.4L449.7,151.3L476.7,147.5L490.0,145.1L495.7,132.8L504.3,131.7Z"}, {"n": "Zonguldak", "d": "M332.7,42.6L333.7,45.2L347.4,59.7L350.0,64.3L347.1,64.4L338.6,69.7L336.4,75.1L336.4,79.0L302.5,76.4L297.3,71.1L301.0,66.0L300.6,62.1L301.4,62.6L301.6,61.9L300.1,60.6L300.5,59.1L311.9,54.6L318.6,50.8L318.9,49.8L320.5,49.8L326.1,45.2L332.7,42.6Z"}];
-const R={Yıldırım:'--y',Tuna:'--t',Hakan:'--h'};
-const sb=supabase.createClient(SUPABASE_URL,SUPABASE_ANON_KEY);
-const DOMAIN='@bayi.local';
-let D={};const hide=new Set();let cur=null;
-const COLS=['sorumlu','bayi','yetkili','tel','adres','notlar'];
-const fromRow=r=>({s:r.sorumlu||'',bayi:r.bayi,yetkili:r.yetkili,tel:r.tel,adres:r.adres,not:r.notlar,isler:r.isler||[]});
-const toRow=(n,r)=>({il:n,sorumlu:r.s||null,bayi:r.bayi||null,yetkili:r.yetkili||null,tel:r.tel||null,adres:r.adres||null,notlar:r.not||null,isler:r.isler||[]});
-const timers={};
-const save=()=>{if(!cur)return;const n=cur;clearTimeout(timers[n]);sync.textContent='Kaydediliyor…';
-timers[n]=setTimeout(async()=>{const {error}=await sb.from('iller').upsert(toRow(n,D[n]));sync.textContent=error?'Kaydedilemedi: '+error.message:'Kaydedildi · herkes görüyor'},600)};
-const svg=document.getElementById('svg');
-P.forEach(p=>{const e=document.createElementNS('http://www.w3.org/2000/svg','path');e.setAttribute('d',p.d);e.setAttribute('tabindex','0');e.dataset.n=p.n;
-e.onclick=()=>sel(p.n);e.onkeydown=k=>{if(k.key==='Enter')sel(p.n)};
-e.onmouseenter=()=>{const r=D[p.n];tip.textContent=p.n+(r&&r.s?' — '+r.s+(r.bayi?' · '+r.bayi:''):' — atanmamış')};
-svg.appendChild(e)});
-const NS='http://www.w3.org/2000/svg',LB={};
-const center=d=>{let best=null,ba=0;d.split('Z').filter(Boolean).forEach(s=>{const pts=s.replace('M','').split('L').map(q=>q.split(',').map(Number));
-let a=0,cx=0,cy=0;for(let i=0;i<pts.length;i++){const [x1,y1]=pts[i],[x2,y2]=pts[(i+1)%pts.length];const f=x1*y2-x2*y1;a+=f;cx+=(x1+x2)*f;cy+=(y1+y2)*f}
-if(Math.abs(a)>ba){ba=Math.abs(a);best=[cx/(3*a),cy/(3*a)]}});return best};
-const lg=document.createElementNS(NS,'g');svg.appendChild(lg);
-P.forEach(p=>{const c=center(p.d);if(!c)return;const tx=document.createElementNS(NS,'text');tx.setAttribute('class','lbl');tx.setAttribute('x',c[0].toFixed(1));tx.setAttribute('y',c[1].toFixed(1));tx.textContent=p.n;lg.appendChild(tx);LB[p.n]=tx});
-function paint(){const c={Yıldırım:0,Tuna:0,Hakan:0};svg.querySelectorAll('path').forEach(e=>{const r=D[e.dataset.n];const s=r&&r.s;if(s)c[s]++;
-e.style.fill=s?`var(${R[s]})`:'var(--empty)';e.classList.toggle('dim',!!s&&hide.has(s));e.classList.toggle('sel',e.dataset.n===cur);const l=LB[e.dataset.n];if(l)l.classList.toggle('dim',!!s&&hide.has(s))});
-leg.innerHTML='';Object.keys(R).forEach(s=>{const b=document.createElement('button');b.className='chip';b.setAttribute('aria-pressed',!hide.has(s));
-b.innerHTML=`<span class="dot" style="background:var(${R[s]})"></span>${s} <small>${c[s]} il</small>`;b.onclick=()=>{hide.has(s)?hide.delete(s):hide.add(s);paint()};leg.appendChild(b)});
-if(typeof board==='function'&&!vBoard.hidden)board();stats.textContent=`Atanmamış il: ${81-c.Yıldırım-c.Tuna-c.Hakan}`}
-const esc=s=>(s||'').replace(/[&<>"]/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;'}[c]));
-function sel(n){cur=n;const r=D[n]||(D[n]={s:'',isler:[]});
-side.innerHTML=`<h2>${n}</h2>
-<label>Sorumlu<select id="f_s"><option value="">— Atanmamış —</option>${Object.keys(R).map(s=>`<option ${r.s===s?'selected':''}>${s}</option>`).join('')}</select></label>
-<label>Bayi adı<input id="f_bayi" value="${esc(r.bayi)}"></label>
-<label>Yetkili kişi<input id="f_yetkili" value="${esc(r.yetkili)}"></label>
-<label>Telefon<input id="f_tel" value="${esc(r.tel)}"></label>
-<label>Notlar<textarea id="f_not">${esc(r.not)}</textarea></label>
-<div><label>İşler</label><div class="jobs" id="jobs"></div></div>
-<div class="row"><button class="b p" id="j_add">+ Bu ile kart ekle</button><button class="b" id="j_pano">Panoda göster</button></div>`;
-['s','bayi','yetkili','tel','not'].forEach(k=>{const el=document.getElementById('f_'+k);el.oninput=()=>{r[k]=el.value;save();paint()}});
-j_add.onclick=()=>openCard(null,{il:n});j_pano.onclick=()=>{fIl.value=n;show('board')};
-ilKart();paint()}
-
-const DUR=[['yapilacak','Yapılacak'],['devam','Devam ediyor'],['tamam','Tamamlandı']];const DN=Object.fromEntries(DUR);
-const ILLER=P.map(p=>p.n).sort((a,b)=>a.localeCompare(b,'tr'));
-let K={},dragId=null,editId=null;
-const fmt=d=>d?d.split('-').reverse().join('.'):'';
-const sorOf=il=>(D[il]&&D[il].s)||'';
-fIl.innerHTML='<option value="">Tüm iller</option>'+ILLER.map(n=>`<option>${n}</option>`).join('');
-kIl.innerHTML='<option value="">İl seçin</option>'+ILLER.map(n=>`<option>${n}</option>`).join('');
-kD.innerHTML=DUR.map(([v,l])=>`<option value="${v}">${l}</option>`).join('');
-kIl.onchange=()=>kS.value=sorOf(kIl.value)||'Atanmamış';
-function show(v){const b=v==='board';vMap.hidden=b;vBoard.hidden=!b;tMap.setAttribute('aria-selected',!b);tBoard.setAttribute('aria-selected',b);if(b)board();try{history.replaceState(null,'',b?'#pano':'#')}catch(e){}}
-tMap.onclick=()=>show('map');tBoard.onclick=()=>show('board');
-[fIl,fSor].forEach(x=>x.onchange=board);fQ.oninput=board;
-const sorted=d=>Object.values(K).filter(c=>c.durum===d).sort((a,b)=>a.sira-b.sira);
-function visible(c){const q=fQ.value.trim().toLocaleLowerCase('tr');
-return(!fIl.value||c.il===fIl.value)&&(!fSor.value||sorOf(c.il)===fSor.value)&&(!q||(c.baslik+' '+(c.aciklama||'')+' '+c.il).toLocaleLowerCase('tr').includes(q))}
-function cardEl(c){const s=sorOf(c.il);const e=document.createElement('div');e.className='card';e.draggable=true;e.dataset.id=c.id;e.tabIndex=0;
-if(s)e.style.borderLeftColor=`var(${R[s]})`;
-e.innerHTML=`<div class="tt"></div><div class="meta"><span class="pill">${s?`<span class="dot" style="background:var(${R[s]})"></span>`:''}${esc(c.il)}</span>${c.tarih?`<span>${fmt(c.tarih)}</span>`:''}${c.aciklama?'<span title="Açıklama var">☰</span>':''}</div>`;
-e.querySelector('.tt').textContent=c.baslik;
-e.onclick=()=>openCard(c.id);e.onkeydown=k=>{if(k.key==='Enter')openCard(c.id)};
-e.ondragstart=ev=>{dragId=c.id;e.classList.add('drag');ev.dataTransfer.effectAllowed='move';try{ev.dataTransfer.setData('text/plain',c.id)}catch(_){}};
-e.ondragend=()=>{dragId=null;e.classList.remove('drag');document.querySelectorAll('.list.over').forEach(l=>l.classList.remove('over'))};
-return e}
-function board(){if(vBoard.hidden)return;cols.innerHTML='';let tot=0;
-DUR.forEach(([d,lab])=>{const items=sorted(d).filter(visible);tot+=items.length;
-const col=document.createElement('div');col.className='col';col.innerHTML=`<h3>${lab}<small>${items.length}</small></h3>`;
-const list=document.createElement('div');list.className='list';list.dataset.d=d;items.forEach(c=>list.appendChild(cardEl(c)));
-list.ondragover=ev=>{if(!dragId)return;ev.preventDefault();list.classList.add('over')};
-list.ondragleave=ev=>{if(!list.contains(ev.relatedTarget))list.classList.remove('over')};
-list.ondrop=ev=>{ev.preventDefault();list.classList.remove('over');if(!dragId)return;
-const els=[...list.querySelectorAll('.card')].filter(x=>x.dataset.id!==dragId);let idx=els.findIndex(x=>{const r=x.getBoundingClientRect();return ev.clientY<r.top+r.height/2});if(idx<0)idx=els.length;
-moveCard(dragId,d,els[idx-1]&&K[els[idx-1].dataset.id],els[idx]&&K[els[idx].dataset.id])};
-col.appendChild(list);
-const add=document.createElement('button');add.className='addc';add.textContent='+ Kart ekle';
-add.onclick=()=>{add.hidden=true;const f=document.createElement('div');f.className='comp';
-f.innerHTML=`<textarea placeholder="Kart başlığı"></textarea><select><option value="">İl seçin</option>${ILLER.map(n=>`<option ${n===(fIl.value||cur)?'selected':''}>${n}</option>`).join('')}</select><div class="row"><button class="b p">Ekle</button><button class="b" type="button">Vazgeç</button></div><div class="err"></div>`;
-const [ta]=f.getElementsByTagName('textarea'),[se]=f.getElementsByTagName('select'),[ok,no]=f.getElementsByTagName('button'),er=f.querySelector('.err');
-const go=async()=>{const b=ta.value.trim();if(!b){ta.focus();return}if(!se.value){er.textContent='Bir il seçin.';return}
-const last=sorted(d).pop();ok.disabled=true;const {data,error}=await sb.from('isler').insert({il:se.value,baslik:b,durum:d,sira:last?last.sira+1:Date.now()/1000}).select().single();ok.disabled=false;
-if(error){er.textContent='Eklenemedi: '+error.message;return}K[data.id]=data;ta.value='';er.textContent='';board();ilKart();f.querySelector('textarea').focus()};
-ok.onclick=go;ta.onkeydown=k=>{if(k.key==='Enter'&&!k.shiftKey){k.preventDefault();go()}if(k.key==='Escape'){f.remove();add.hidden=false}};
-no.onclick=()=>{f.remove();add.hidden=false};col.insertBefore(f,add);ta.focus()};
-col.appendChild(add);cols.appendChild(col)});
-bstat.textContent=tot+' kart'}
-async function moveCard(id,d,prev,next){const c=K[id];if(!c)return;
-let s=prev&&next?(prev.sira+next.sira)/2:prev?prev.sira+1:next?next.sira-1:Date.now()/1000;
-if(c.durum===d&&c.sira===s)return;const old={durum:c.durum,sira:c.sira};K[id]={...c,durum:d,sira:s};board();ilKart();
-const {error}=await sb.from('isler').update({durum:d,sira:s}).eq('id',id);if(error){K[id]={...K[id],...old};board();ilKart();bstat.textContent='Taşınamadı: '+error.message}}
-function ilKart(){const j=document.getElementById('jobs');if(!j||!cur)return;
-const ord={yapilacak:0,devam:1,tamam:2};const items=Object.values(K).filter(c=>c.il===cur).sort((a,b)=>ord[a.durum]-ord[b.durum]||a.sira-b.sira);
-j.innerHTML=items.length?'':'<span class="stats">Bu ilde henüz kart yok.</span>';
-items.forEach(c=>{const r=document.createElement('div');r.className='krow';r.innerHTML=`<span></span><span class="badge d-${c.durum}">${DN[c.durum]}</span>`;r.firstChild.textContent=c.baslik;r.onclick=()=>openCard(c.id);j.appendChild(r)})}
-let delArm=false;
-function openCard(id,pre={}){editId=id;const c=id?K[id]:{baslik:'',il:pre.il||fIl.value||cur||'',durum:'yapilacak',tarih:new Date().toISOString().slice(0,10),aciklama:''};
-kTitle.textContent=id?'Kartı düzenle':'Yeni kart';kB.value=c.baslik;kIl.value=c.il;kD.value=c.durum;kT.value=c.tarih||'';kA.value=c.aciklama||'';kS.value=sorOf(c.il)||'Atanmamış';
-kMeta.textContent=id?'Oluşturulma: '+new Date(c.created_at).toLocaleString('tr-TR')+(c.updated_at!==c.created_at?' · Son değişiklik: '+new Date(c.updated_at).toLocaleString('tr-TR'):''):'';
-kErr.textContent='';kDel.hidden=!id;delArm=false;kDel.textContent='Sil';kDel.classList.remove('danger');dlg.showModal();kB.focus()}
-kCancel.onclick=()=>dlg.close();
-kDel.onclick=async()=>{if(!delArm){delArm=true;kDel.textContent='Silmek için tekrar tıklayın';kDel.classList.add('danger');return}
-const {error}=await sb.from('isler').delete().eq('id',editId);if(error){kErr.textContent='Silinemedi: '+error.message;return}delete K[editId];dlg.close();board();ilKart()};
-kf.onsubmit=async e=>{e.preventDefault();if(!kB.value.trim()||!kIl.value){kErr.textContent='Başlık ve il gerekli.';return}
-const row={baslik:kB.value.trim(),il:kIl.value,durum:kD.value,tarih:kT.value||null,aciklama:kA.value.trim()||null};
-kSave.disabled=true;let res;
-if(editId){const c=K[editId];if(c.durum!==row.durum){const l=sorted(row.durum).pop();row.sira=l?l.sira+1:Date.now()/1000}res=await sb.from('isler').update(row).eq('id',editId).select().single()}
-else{const l=sorted(row.durum).pop();row.sira=l?l.sira+1:Date.now()/1000;res=await sb.from('isler').insert(row).select().single()}
-kSave.disabled=false;if(res.error){kErr.textContent='Kaydedilemedi: '+res.error.message;return}K[res.data.id]=res.data;dlg.close();board();ilKart()};
-async function loadK(){const {data,error}=await sb.from('isler').select('*');if(error){bstat.textContent='Kartlar alınamadı: '+error.message;return}K={};data.forEach(c=>K[c.id]=c);board();ilKart()}
-sb.channel('isler').on('postgres_changes',{event:'*',schema:'public',table:'isler'},p=>{
-if(p.eventType==='DELETE'){delete K[p.old.id]}else K[p.new.id]=p.new;board();ilKart()}).subscribe();
-async function load(){const {data,error}=await sb.from('iller').select('*');if(error){sync.textContent='Veri alınamadı: '+error.message;return}
-D={};data.forEach(x=>D[x.il]=fromRow(x));paint();sync.textContent='Canlı · '+data.length+' il kaydı'}
-sb.channel('iller').on('postgres_changes',{event:'*',schema:'public',table:'iller'},p=>{
-const x=p.new&&p.new.il?p.new:p.old;const editing=cur===x.il&&side.contains(document.activeElement);
-if(p.eventType==='DELETE')delete D[x.il];else if(!editing)D[x.il]=fromRow(p.new);
-paint();if(cur===x.il&&!editing)sel(cur)}).subscribe();
-async function start(sess){if(!sess){login.hidden=false;return}login.hidden=true;me.textContent=sess.user.email.replace(DOMAIN,'');await load();await loadK();if(location.hash==='#pano')show('board')}
-const norm=v=>v.trim().toLocaleLowerCase('tr').replace(/ı/g,'i').replace(/ç/g,'c').replace(/ğ/g,'g').replace(/ö/g,'o').replace(/ş/g,'s').replace(/ü/g,'u').replace(/i̇/g,'i');
-toReg.onclick=()=>{lf.hidden=true;rf.hidden=false;ru.focus()};
-toLog.onclick=()=>{rf.hidden=true;lf.hidden=false;lu.focus()};
-rf.onsubmit=async e=>{e.preventDefault();rerr.textContent='';
-if(rp.value!==rp2.value){rerr.textContent='Şifreler aynı değil.';return}
-const k=norm(ru.value);
-const {data,error}=await sb.rpc('kayit_ol',{kullanici:k,sifre:rp.value,referans:rk.value.trim()});
-if(error){rerr.textContent=error.message||'Kayıt yapılamadı.';return}
-const r=await sb.auth.signInWithPassword({email:data+DOMAIN,password:rp.value});
-if(r.error){rerr.textContent='Kayıt tamam, ama giriş yapılamadı. Girişe dönüp tekrar deneyin.';return}
-rf.hidden=true;lf.hidden=false;start(r.data.session)};
-lf.onsubmit=async e=>{e.preventDefault();lerr.textContent='';const u=norm(lu.value);
-const {data,error}=await sb.auth.signInWithPassword({email:u.includes('@')?u:u+DOMAIN,password:lp.value});
-if(error){lerr.textContent='Kullanıcı adı veya şifre hatalı.';return}start(data.session)};
-out.onclick=async()=>{await sb.auth.signOut();location.reload()};
-paint();sb.auth.getSession().then(({data})=>start(data.session));
-</script>
+<script src="iller.js"></script>
+<script src="app.js"></script>
 </body></html>
