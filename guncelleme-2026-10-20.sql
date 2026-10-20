@@ -60,8 +60,7 @@ begin
   end if;
   return new;
 end $$;
-drop trigger isler_touch on public.isler;
-create trigger isler_touch before insert or update on public.isler
+create or replace trigger isler_touch before insert or update on public.isler
 for each row execute function public.isler_touch();
 
 alter policy "izinli ekler" on public.isler with check ((select private.il_duzenleyebilir(il)));
